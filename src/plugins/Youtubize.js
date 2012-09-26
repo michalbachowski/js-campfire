@@ -33,6 +33,12 @@ var ChatPluginYoutubize = (function ($, Listener) {
                 });
                 return node;
             };
+        // missing jQuery dialog
+        if ($.fn.dialog === void 0) {
+            youtubize = function (event, node) {
+                return node;
+            };
+        }
         this.mapping = function () {
             return {
                 "display_message.node.filter": [youtubize, 50]
