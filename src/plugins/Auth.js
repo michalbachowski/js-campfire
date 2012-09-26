@@ -13,7 +13,9 @@ function ChatPluginAuth( params ) {
             label: "Login",
             submit: "Login",
             title: "Login to chat",
-            logout: " (logout)"
+            logout: " (logout)",
+            loginUrl: "/chat/entrance.json",
+            logoutUrl: "/chet/exit.json"
         },
         params
     );
@@ -38,7 +40,7 @@ function ChatPluginAuth( params ) {
         }
 
         var message = {
-            url: "/jbapp/chat/%room%/wejscie.json",
+            url: options.loginUrl,
             message: { login: nick },
             success: onLogin,
             error: onError
@@ -50,7 +52,7 @@ function ChatPluginAuth( params ) {
 
     this.doLogout = function() {
         var message = {
-            url: "/jbapp/chat/%room%/wyjscie.json",
+            url: options.logoutUrl,
             message: {},
             success: onLogout,
             error: onError

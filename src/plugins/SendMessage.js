@@ -3,16 +3,14 @@ var ChatPluginSendMessage = (function (jQuery, Listener) {
     return function (defaultUrl, timeout) {
         Listener.apply(this, arguments);
 
-        timeout = timeout || 10; // seconds
-        room = room || "ognisko";
         var self   = this,
+            url = defaultUrl || "/chat/response.json",
             prepareUrl = function (eventUrl) {
                 if (eventUrl === void 0) {
-                    return defaultUrl;
+                    return url;
                 }
-                return eventUrl.replace(/%room%/, room);
+                return eventUrl;
             },
-            url = prepareUrl(defaultUrl || "/jbapp/chat/%room%/odpowiedz.json"),
             invokeCallback = function (response, callback) {
                 if (callback === void 0) {
                     return;
@@ -40,7 +38,7 @@ var ChatPluginSendMessage = (function (jQuery, Listener) {
                     error: function (response) {
                         invokeCallback(response, event.parameter("error"));
                     },
-                    timeout: timeout * 1000
+                    timeout: (timeout || 10) * 1000
                 });
                 return true;
             };
