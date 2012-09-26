@@ -1,4 +1,4 @@
-var ChatPluginMessageTime = function (jQuery, Listener) {
+var ChatPluginMessageTime = (function (jQuery, Listener) {
     "use strict";
     return function () {
         Listener.apply(this, arguments);
@@ -29,4 +29,4 @@ var ChatPluginMessageTime = function (jQuery, Listener) {
             };
         };
     };
-}(jQuery, Listener);
+}(jQuery, Listener));

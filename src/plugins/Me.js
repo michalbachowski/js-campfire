@@ -13,4 +13,4 @@ var ChatPluginMe = function () {
             "display_message.node.filter": filter
         };
     };
-}
+};
