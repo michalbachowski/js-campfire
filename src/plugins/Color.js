@@ -22,5 +22,4 @@ var ChatPluginColor = function (params) {
             "display_message.node.filter": colorize
         };
     };
-
 }
