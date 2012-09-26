@@ -91,7 +91,14 @@ var ChatFactory = function ($, Event, EventDispatcher) {
 
         return function (pooler, eventDispatcher) {
             dispatcher = eventDispatcher || new EventDispatcher();
-            self.init = doInit;
+            self.init = function () {
+                // HOOK: dispatch start
+                dispatcher.notify(new Event(self, "chat.init"));
+
+                // start pooling
+                pooler(callback);
+                return self;
+            };
             return self;
         };
     },
