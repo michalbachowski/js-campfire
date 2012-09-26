@@ -1,0 +1,211 @@
+#body {
+    width: 85em;
+    margin: 0 auto;
+    clear: both;
+    padding: 0 0 2em;
+    position: relative;
+    font-family: "Verdana", sans-serif;
+    font-size: 0.9em;
+    overflow: hidden;
+}
+#body fieldset {
+    border: 0.1em solid #000;
+    padding: 1em;
+    margin: 0;
+}
+    #body #chat-logout {
+        display: block;
+        position: absolute;
+        top: 1em;
+        right: 1em;
+        cursor: pointer;
+    }
+    #body #chat-logout:hover {
+        text-decoration: underline;
+    }
+#chat-form {
+    width: 65em;
+    height: 3em;
+    margin: 0 auto;
+}
+    #chat-form div {
+        float: right;
+        width: 10em;
+        height: 3em;
+    }
+    #chat-form div.text {
+        width: 55em;
+    }
+        #chat-form input[type=text] {
+            width: 55em;
+            border: 0.1em solid #000;
+        }
+    #chat-form .check label {
+        display: block;
+        text-align: right;
+        overflow: hidden;
+        margin-right: 1em;
+        border: 0.1em solid #000;
+    }
+    #chat-form div.submit {
+        display: none;
+    }
+.inbox {
+    width: 79.6%;
+    float: left;
+    border: 0.1em solid #000;
+    margin: 1em 1% 0 0;
+    padding: 0;
+    min-height: 2em;
+}
+    .inbox p {
+        padding: 0.2em 0.5em 0.3em 0.5em;
+        margin: 0;
+        clear: both;
+        overflow: hidden;
+        text-align: justify;
+    }
+    .inbox strong,
+    .inbox em,
+    .inbox span {
+    }
+    .inbox .me strong,
+    .inbox .me em,
+    .inbox .me span {
+        font-weight: normal;
+        font-style: italic;
+    }
+    .inbox .const strong,
+    .inbox .const em,
+    .inbox .const span,
+    .inbox .const small {
+        display: block;
+        float: left;
+    }
+    .inbox .const .user-name {
+        width: 13%;
+        text-align: right;
+        overflow: hidden;
+        padding-right: 0.5%;
+    }
+    /* standard width */
+    .inbox .const .message {
+        width: 81%;
+        overflow: hidden;
+    }
+    .inbox strong:after {
+        content: ":";
+    }
+    .inbox .me strong:after {
+        content: "";
+    }
+    .inbox small {
+        color: #ababab;
+        margin-right: 0.5em;
+    }
+    .inbox .ban-button {
+        font-size: 0.8em;
+        padding: 0 0.5em;
+        text-align: center;
+        cursor: pointer;
+    }
+    .inbox .direct-message {
+        padding: 0 0.5em;
+        font-size: 0.8em;
+    }
+
+.users-list {
+    border: 0.1em solid #000;
+    width: 19%;
+    float: right;
+    margin: 1em 0 0 0;
+    padding: 0;
+    min-height: 2em;
+}
+    .users-list li {
+        list-style-type: none;
+        min-height: 2em;
+        padding: 0.5em 0.5em 0.5em 3em;
+        position: relative;
+    }
+        .users-list li img {
+            position: absolute;
+            top: 0.5em;
+            right: 100%;
+            width: 2em;
+            z-index: 10;
+            margin-right: -2.5em;
+        }
+        .users-list li:hover img {
+            width: auto;
+            height: auto;
+            z-index: 100;
+        }
+        .users-list li a, .users-list li small {
+            display: block;
+            line-height: 1.1em;
+        }
+        .users-list li a {
+            font-weight: bold;
+        }
+        .users-list li small {
+            font-size: 0.8em;
+            margin-bottom: 0.4em;
+        }
+        .users-list .ban-button,
+        .users-list .button-direct-msg,
+        .users-list .direct-msg {
+            font-size: 0.8em;
+            height: 1.2em;
+            line-height: 1.2em;
+            text-align: center;
+            cursor: pointer;
+            width: 3.5em;
+        }
+        .users-list .ban-button + .button-direct-msg,
+        .users-list .ban-button + .direct-msg {
+            margin: -1.75em 0 0 4em;
+        }
+        .users-list .user-ip {
+            padding-bottom: 0.4em;
+            font-size: 0.7em;
+        }
+
+        .users-list .typing {
+            background: transparent url("http://magazyn.jaskiniabehemota.net/common/edit.png") 100% 0 no-repeat;
+        }
+
+.button-bar {
+    float: right;
+    width: 19%;
+    margin-top: -1em;
+}
+    .button-bar span {
+        display: block;
+        float: left;
+        font-size: 0.8em;
+        height: 1.7em;
+        line-height: 1.7em;
+        padding: 0 0.5em;
+        margin: 0.5em;
+        cursor: pointer;
+    }
+
+#nav {
+  float: right;
+  z-index: 99;
+}
+
+#login-box {
+    height: 3.5em;
+}
+    #login-box label {
+        padding: 1em;
+    }
+    #login-box input[type=text] {
+        width: 70%;
+    }
+    #login-box .submit {
+        text-align: left;
+        padding: 0.5em 0 0 1em;
+    }

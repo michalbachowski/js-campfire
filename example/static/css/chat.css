@@ -1,0 +1,175 @@
+html, body {
+    background: #000 url( "../img/bg.jpg" ) 100% 100% no-repeat fixed;
+    color: #fff;
+}
+
+a {
+    text-decoration: none;
+    color: #F7ECBC;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+#body {
+    margin-top: 40px;
+}
+
+.inbox, .users-list, #body fieldset {
+    background-color: #111;
+    border: 0.1em solid #666;
+}
+.users-list {
+    opacity: 0.7;
+}
+    .users-list li .user-name {
+        color: #3aa270;
+    }
+    .users-list .user-ip {
+        color: #666;
+    }
+    .users-list .ban-button,
+    .users-list .direct-msg,
+    .users-list .button-direct-msg {
+        border: 0.1em solid #666;
+    }
+    .users-list .ban-button:hover,
+    .users-list .direct-msg:hover,
+    .users-list .button-direct-msg:hover {
+        border-color: #f7ecbc;
+    }
+
+.button-bar {
+    background-color: #111;
+    border: 0.1em solid #666;
+    opacity: 0.7;
+}
+    .button-bar span {
+        border: 0.1em solid #666666
+    }
+    .button-bar span:hover {
+        border-color: #f7ecbc;
+    }
+
+.inbox p, .users-list li, .inbox small {
+    -webkit-transition: background-color 0.4s ease-out, color 0.4s ease-out;
+    -moz-transition: background-color 0.4s ease-out, color 0.4s ease-out;
+    -o-transition: background-color 0.4s ease-out, color 0.4s ease-out;
+    transition: background-color 0.4s ease-out, color 0.4s ease-out;
+}
+#body #chat-form input, #chat-form .check label, #login-box input {
+    background-color: #000;
+    color: #fff;
+    border: 0.1em solid #666;
+}
+    #body #chat-form input:focus, #body #chat-form input:hover, #chat-form .check label:hover {
+        border-color: #F0E68C;
+    }
+    .inbox p /*, .inbox strong:after*/ {
+        color: #9bdeb3;
+    }
+    .inbox p:hover, .users-list li:hover {
+        background-color: #333;
+    }
+    .inbox small {
+        color: #454545;
+    }
+    .inbox p:hover small {
+        color: #666;
+    }
+    .inbox p a {
+        opacity: 0.8;
+    }
+    .inbox .ban-button,
+    .inbox .direct-msg {
+        border: 0.1em solid #454545;
+    }
+    .inbox .ban-button:hover,
+    .inbox .direct-msg:hover {
+        border-color: #f7ecbc;
+        color: #fff;
+    }
+
+#jb-menu {
+    z-index: 200;
+}
+    .jb-menu-bg {
+        background-color: #111111;
+    }
+    #jb-menu ul {
+        font-size: 0.9em;
+        height: 2em;
+        width: 88em;
+    }
+        #jb-menu li {
+            font-size: 0.8em;
+            height: 2.5em;
+            line-height: 2.5em;
+        }
+            #jb-menu li a, #jb-menu li strong {
+                font-size: inherit;
+            }
+            
+            /*  */
+            
+            
+            #settings_box {
+                float: left;
+                width: 79.6%;
+                
+            }
+            textarea.lista_ignorowanych {
+                margin: 0 auto;
+                
+            }
+            .chat_tab {
+                display: inline-block;
+                width: 90px;
+                text-align: center;
+                border: 1px solid gray;
+                border-radius: 3px;
+                cursor: pointer;
+            }
+            .tabs_bar {
+                margin-bottom: 5px;
+            }
+            .button {
+                border: 3px solid rgba(255, 255, 255, 0);
+                border-radius: 20px !important;
+                opacity: 0.8;
+                display: inline-block;
+                padding: 5px;
+                background-color: #444444;
+                cursor: pointer;
+            }
+            .button:active {
+                border: 1px solid black;
+                padding: 7px;
+            }
+            #settings_box textarea {
+               opacity: 0.9;
+               border: none;
+               background-color: #000000;
+               color: white;
+               width: 400px;
+               height: 150px;
+            }
+            #settings_box {
+                width: 79.6%;
+                padding:0;
+            }
+            #settings_box fieldset {
+                vertical-align: middle;
+                overflow: hidden;
+                width: 85%;
+                margin: 0 auto !important;
+            }
+            span.highlight {
+                display: inline-block !important;
+                float: none !important;
+                
+                padding: 3px;
+                border-radius: 2px;
+                background-color: rgba(255, 255, 255, 0.3);
+               
+            } 

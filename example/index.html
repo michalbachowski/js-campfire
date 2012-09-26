@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
+        <title>Campfire</title>
+        <link rel="stylesheet" href="../example/static/css/chat.css" type="text/css"/>
+    </head>
+<body>
+    <div id="body">
+        <form action="/ognisko/odpowiedz.json" method="post" id="chat-form">
+            <fieldset>
+                <div class="text">
+                    <input type="text" name="message" autocomplete="off" />
+                </div>
+                <div class="submit">
+                    <input type="submit" value="Odpowiedz" />
+                </div>
+            </fieldset>
+        </form>
+        <div class="inbox tab_box" id="inbox">
+        </div>
+    </div>
+    <!-- jQuery -->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <!-- External modules: poller, EventDispatcher and jQuery Title Alert -->
+    <script src="../vendors/js-poller/src/poller.js" type="text/javascript"></script>
+    <script src="../vendors/js-event-dispatcher/vendors/priority_queue/src/priority_queue.js" type="text/javascript"></script>
+    <script src="../vendors/js-event-dispatcher/src/event_dispatcher.js" type="text/javascript"></script>
+    <script src="../vendors/jquery-titlealert/jquery.titlealert.js" type="text/javascript"></script>
+    <!-- Campfire: chat (core) + plugins -->
+    <script src="../src/chat.js" type="text/javascript"></script>
+    <script src="../src/plugins/Auth.js" type="text/javascript"></script>
+    <script src="../src/plugins/ButtonBar.js" type="text/javascript"></script>
+    <script src="../src/plugins/Ban.js" type="text/javascript"></script>
+    <script src="../src/plugins/Color.js" type="text/javascript"></script>
+    <script src="../src/plugins/Direct.js" type="text/javascript"></script>
+    <script src="../src/plugins/Dispatcher.js" type="text/javascript"></script>
+    <script src="../src/plugins/DisplayMessage.js" type="text/javascript"></script>
+    <script src="../src/plugins/Form.js" type="text/javascript"></script>
+    <script src="../src/plugins/InfoBox.js" type="text/javascript"></script>
+    <script src="../src/plugins/Me.js" type="text/javascript"></script>
+    <script src="../src/plugins/MessageTime.js" type="text/javascript"></script>
+    <script src="../src/plugins/Nap.js" type="text/javascript"></script>
+    <script src="../src/plugins/Puppet.js" type="text/javascript"></script>
+    <script src="../src/plugins/SendMessage.js" type="text/javascript"></script>
+    <script src="../src/plugins/TitleAlert.js" type="text/javascript"></script>
+    <script src="../src/plugins/Typing.js" type="text/javascript"></script>
+    <script src="../src/plugins/Urlize.js" type="text/javascript"></script>
+    <script src="../src/plugins/UsersList.js" type="text/javascript"></script>
+    <script src="../src/plugins/Youtubize.js" type="text/javascript"></script>
+    <!-- chat init -->
+    <script src="../example/static/js/init.js" type="text/javascript"></script>
+</body>
+</html>
