@@ -13,3 +13,6 @@
 [submodule "vendors/jquery-color"]
 	path = vendors/jquery-color
 	url = git://github.com/jquery/jquery-color.git
+[submodule "vendors/bootstrap"]
+	path = vendors/bootstrap
+	url = git://github.com/twitter/bootstrap.git
