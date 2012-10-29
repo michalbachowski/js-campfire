@@ -27,5 +27,5 @@ campfire
     .attach(new ChatPluginYoutubize());
 
 // DEBUG
-// ognisko.dispatcher().connect("chat.message.display",console.log, 200);
+// campfire.dispatcher().connect("chat.message.display",console.log, 200);
 campfire.init();
