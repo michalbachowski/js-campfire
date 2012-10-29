@@ -1,158 +1,149 @@
-function ChatPluginAuth( params ) {
-    Listener.apply( this, arguments );
+var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
+    "use strict";
 
-    this.mapping = function() {
-        return {
-            "chat.init": init
-        };
-    };
+    return function (params) {
+        Listener.apply(this, arguments);
 
-    var options = jQuery.extend(
-        {
-            boxId: "login-box",
-            label: "Login",
-            submit: "Login",
-            title: "Login to chat",
-            logout: " (logout)",
-            loginUrl: "/chat/entrance.json",
-            logoutUrl: "/chet/exit.json"
-        },
-        params
-    );
-    var self   = this;
-    self.dialog = jQuery( "#" + options.boxId );
+        var self = this,
+            options = $.extend(
+                true,
+                {
+                    url: {
+                        login: '/chat/entrance.json',
+                        logout: '/chat/exit.json'
+                    },
+                    lang: {
+                        header: 'Login',
+                        label: "Nickname",
+                        placeholder: "Nickname…",
+                        desc: '',
+                        close: 'Close',
+                        submit: 'Submit'
+                    }
+                },
+                params
+            ),
+            notifyLoggedOut = function (message) {
+                self.dispatcher.notify(
+                    new Event(self, "auth.logout", message)
+                );
+            },
+            notifyLoggedIn = function (message) {
+                self.dispatcher.notify(
+                    new Event(self, "auth.login", message)
+                );
+            },
+            whoami = function (response) {
+                if (response.status !== 1 || !response.response.hasOwnProperty('whoami')) {
+                    return;
+                }
+                if (response.response.whoami[0].hasAccount) {
+                    notifyLoggedOut(response.response.whoami[0].name);
+                } else {
+                    notifyLoggedIn(response.response.whoami[0].name);
+                }
+                self.dialog.hide();
+            },
+            onError = function (response, e) {
+                if (403 === response.status) {
+                    self.login();
+                }
+            },
+            init = function () {
+                var message = {
+                    message: { message: "$whoami tell" },
+                    success: whoami,
+                    error: onError
+                };
+                self.dispatcher.notifyUntil(
+                    new Event(self, "send_message.send", message)
+                );
+            };
 
-    var init = function() {
-        var message = {
-            message: { message: "$whoami tell" },
-            success: whoami,
-            error: onError
-        };
-        self.dispatcher.notifyUntil(
-            new Event(self, "send_message.send", message)
-        );
-    };
+        /**
+         * public methods
+         */
+        self.dialog = (function () {
+            var $dialog,
+                initDialog = function () {
+                    if ($dialog !== void 0) {
+                        return;
+                    }
+                    $dialog = Handlebars.compile(' ' +
+                        '<form class="modal hide fade form-horizontal" tabindex="-1" role="dialog" aria-hidden="true">' +
+                        '   <div class="modal-header">' +
+                        '       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>' +
+                        '       <h3>{{header}}</h3>' +
+                        '   </div>' +
+                        '   <div class="modal-body">' +
+                        '       <div class="text control-group">' +
+                        '           <label class="control-label">{{label}}</label>' +
+                        '           <div class="controls">' +
+                        '               <input type="text" placeholder="{{placeholder}}">' +
+                        '               <p class="help-block">{{desc}}</p>' +
+                        '           </div>' +
+                        '       </div>' +
+                        '   </div>' +
+                        '   <div class="modal-footer">' +
+                        '       <a href="#" class="btn" data-dismiss="modal" aria-hidden="true">{{close}}</a>' +
+                        '       <button type="submit" class="btn btn-primary">{{submit}}</button>' +
+                        '   </div>' +
+                        '</form>')(options.lang);
+                };
+            return {
+                show: function () {
+                    initDialog();
+                    $dialog.modal('show');
+                },
 
-    this.doLogin = function( nick ) {
-        if ( !nick ) {
-            self.dialog.dialog( "open" );
-            return;
-        }
+                hide: function () {
+                    initDialog();
+                    $dialog.modal('hide');
+                }
+            };
+        }());
 
-        var message = {
-            url: options.loginUrl,
-            message: { login: nick },
-            success: onLogin,
-            error: onError
-        };
-        self.dispatcher.notifyUntil(
-            new Event(self, "send_message.send", message)
-        );
-    };
+        self.login = function (nick) {
+            if (!nick) {
+                self.dialog.show();
+                return;
+            }
 
-    this.doLogout = function() {
-        var message = {
-            url: options.logoutUrl,
-            message: {},
-            success: onLogout,
-            error: onError
-        };
-        self.dispatcher.notifyUntil(
-            new Event(self, "send_message.send", message)
-        );
-    };
-
-    function createDialogBox() {
-        self.dialog = jQuery( "<div />" )
-            .attr( "id", options.boxId )
-            .append(
-                jQuery( "<form />" )
-                .bind( "submit", function() {
-                    self.doLogin( jQuery( "#" + options.boxId + "-name" ).val() );
-                    return false;
-                } )
-                .append(
-                    jQuery( "<fieldset />" )
-                    .append(
-                        jQuery( "<div /> " )
-                        .addClass( "text" )
-                        .append(
-                            jQuery( "<label />" )
-                            .attr( "for", options.boxId + "-name" )
-                            .text( options.label )
-                        )
-                        .append(
-                            jQuery( "<input type=\"text\" />" )
-                            .attr( "name", "name" )
-                            .attr( "id", options.boxId + "-name" )
-                        )
-                    )
-                    .append(
-                        jQuery( "<div />" )
-                        .addClass( "submit" )
-                        .append(
-                            jQuery( "<input type=\"submit\" />" )
-                            .val( options.submit )
-                            .attr( "name", "login" )
-                        )
-                    )
-                )
+            var message = {
+                url: options.url.login,
+                message: { login: nick },
+                success: function (response) {
+                    init();
+                    notifyLoggedIn(response.response.auth[0]);
+                },
+                error: onError
+            };
+            self.dispatcher.notifyUntil(
+                new Event(self, "send_message.send", message)
             );
-    }
-    function initDialog() {
-        if ( self.dialog.length === 0 ) {
-            createDialogBox();
-        }
-        self.dialog.dialog( {
-            modal:      true,
-            autoOpen:   false,
-            width:      100,
-            height:     110,
-            title:      options.title
-        } );
-    }
-    function displayLogoutButton( nick ) {
-        if ( jQuery( "#chat-logout" ).length > 0 ) {
-            return;
-        }
-        jQuery( "<span />" )
-        .attr( "id", "chat-logout" )
-        .text( nick + options.logout )
-        .bind( "click", self.doLogout )
-        .appendTo( "#body fieldset" );
-    }
-    function removeLogoutButton() {
-        jQuery( "#chat-logout" ).remove();
-    }
-    function whoami( response ) {
-        if ( response.status != 1 || !( 'whoami' in response.response ) ) {
-            return;
-        }
-        if ( response.response.whoami[0].hasAccount ) {
-            displayAuthInfo( response.response.whoami[0].name );
-        } else {
-            displayLogoutButton( response.response.whoami[0].name );
-        }
-        self.dialog.dialog( "close" );
-    }
-    function onError( response, e ) {
-        if ( 403 === response.status ) {
-            initDialog();
-            self.doLogin();
-        }
-    }
-    
-    function onLogin( response ) {
-        init();
-        self.dispatcher.notify(
-            new Event(self, "auth.login", response.response.auth[0] )
-        );
-    }
-    function onLogout( response ) {
-        removeLogoutButton();
-        self.doLogin();
-        self.dispatcher.notify(
-            new Event(self, "auth.logout", response.response.auth[0] )
-        );
-    }
-}
+        };
+
+        self.logout = function () {
+            var message = {
+                url: options.url.logout,
+                message: {},
+                success: function (response) {
+                    self.login();
+                    notifyLoggedOut(response.response.auth[0]);
+                },
+                error: onError
+            };
+            self.dispatcher.notifyUntil(
+                new Event(self, "send_message.send", message)
+            );
+        };
+
+        self.mapping = function () {
+            return {
+                "chat.init": init
+            };
+        };
+
+        return self;
+    };
+}(jQuery, Listener, Event, Handlebars));
