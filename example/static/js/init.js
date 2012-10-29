@@ -1,5 +1,5 @@
 var campfire = new Chat(function (callback) {
-    poller('/jbapp/chat/ognisko/rozmowa.json', callback)
+    poller('/jbapp/chat/ognisko/rozmowa.json', callback);
 });
 
 campfire
