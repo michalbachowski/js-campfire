@@ -7,3 +7,6 @@
 [submodule "vendors/jquery-titlealert"]
 	path = vendors/jquery-titlealert
 	url = git://github.com/heyman/jquery-titlealert.git
+[submodule "vendors/moment"]
+	path = vendors/moment
+	url = git://github.com/timrwood/moment.git
