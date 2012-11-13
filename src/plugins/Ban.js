@@ -2,7 +2,7 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars) {
     "use strict";
     var defaults = {
         label: 'Ban',
-        buttonClass: 'ban-button',
+        buttonClass: 'button-ban',
         userNodeIndicator: '.chat-user',
         template: {
             ip: Handlebars.compile('<small class="user-ip">{{ip}}</small>'),
