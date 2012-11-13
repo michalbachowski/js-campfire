@@ -8,8 +8,9 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
                     '<img src="{{avatar}}" />' +
                     '<strong>{{nick}}</strong>' +
                     '<small>{{title}}</small>' +
+                    '<div class="btn-group" />' +
                 '</li>'),
-            box: Handlebars.compile('<ul class="users-list span4" />')
+            box: Handlebars.compile('<ul class="users-list span3" />')
         }
     
     };
