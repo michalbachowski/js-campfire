@@ -13,7 +13,7 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars) {
                 node.find(".dropdown-menu, .btn-group").first().append(button);
             },
             ip: function (node, ip) {
-                node.append(ip);
+                node.find(".btn-group").first().before(ip);
             }
         }
     };
