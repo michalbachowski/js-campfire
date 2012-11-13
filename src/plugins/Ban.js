@@ -6,7 +6,7 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars) {
         userNodeIndicator: '.chat-user',
         template: {
             ip: Handlebars.compile('<small class="user-ip">{{ip}}</small>'),
-            button: Handlebars.compile('<button class="btn {{buttonClass}}">{{label}}</button>')
+            button: Handlebars.compile('<button class="btn btn-small {{buttonClass}}">{{label}}</button>')
         },
         methods: {
             button: function (node, button) {
