@@ -46,7 +46,7 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
                         ).getReturnValue()
                     },
 
-                    node = options.template.user(user);
+                    node = $(options.template.user(user));
 
                 // HOOK: filter user node
                 node = self.dispatcher.filter(
@@ -60,12 +60,13 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
             // displays given node
             displayNode = function (node) {
                 // find place where to put new node
-                var destination = box
-                    .children()
-                    .filter(function () {
-                        return this.dataset.nick > node.dataset.nick;
-                    })
-                    .first();
+                var nick = node.get(0).dataset.nick,
+                    destination = box
+                        .children()
+                        .filter(function () {
+                            return this.dataset.nick > nick;
+                        })
+                        .first();
 
                 // append node
                 if (0 === destination.length) {
@@ -73,7 +74,7 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
                 } else {
                     destination.before(node);
                 }
-                $(node).slideDown("slow");
+                node.slideDown("slow");
             },
 
             // displays user
@@ -143,7 +144,7 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
                     if (users[i].lastResponse > time) {
                         continue;
                     }
-                    $(users[i].node).slideUp("slow", nodeRemover);
+                    users[i].node.slideUp("slow", nodeRemover);
                     delete users[i];
                 }
             };
