@@ -103,10 +103,10 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
             // returns node information
             // if node for given user is missing - does nothing
             getNode = function (event) {
-                var data = event.parameter("message");
+                var nick = event.parameter("nick");
 
-                if (users.hasOwnProperty(data.nick)) {
-                    event.setReturnValue(users[data.nick].node);
+                if (users.hasOwnProperty(nick)) {
+                    event.setReturnValue(users[nick].node);
                 }
                 return true;
             },
@@ -114,10 +114,9 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
             // returns user data
             // if data for given user is missing - does nothins
             getUser = function (event) {
-                var data = event.parameter("message");
-                
-                if (users.hasOwnProperty(data.nick)) {
-                    event.setReturnValue(users[data.nick].user);
+                var nick = event.parameter("nick");
+                if (users.hasOwnProperty(nick)) {
+                    event.setReturnValue(users[nick].user);
                 }
                 return true;
             },
