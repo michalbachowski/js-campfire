@@ -7,6 +7,14 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars) {
         template: {
             ip: Handlebars.compile('<small class="user-ip">{{ip}}</small>'),
             button: Handlebars.compile('<button class="btn {{buttonClass}}">{{label}}</button>')
+        },
+        methods: {
+            button: function (node, button) {
+                node.find(".dropdown-menu, .btn-group").first().append(button);
+            },
+            ip: function (node, ip) {
+                node.append(ip);
+            }
         }
     };
     return function (params) {
@@ -82,12 +90,12 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars) {
 
                 // append IP (if allowed)
                 if (ip.length > 0) {
-                    node.append(options.template.ip(data.from));
+                    options.methods.ip(node, options.template.ip(data.from));
                 }
 
                 // add ban button (if allowed)
                 if (allowBan) {
-                    node.append(options.template.button(options));
+                    options.methods.button(node, options.template.button(options));
                 }
 
                 return node;
