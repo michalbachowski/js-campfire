@@ -1,7 +1,7 @@
 var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval) {
     "use strict";
     var defaults = {
-        refresh: 60,
+        refresh: 5,
         insert: '#inbox',
         template: {
             user: Handlebars.compile('<li class="row-fluid chat-user" data-nick="{{nick}}">' +
