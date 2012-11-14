@@ -1,39 +1,48 @@
-var ChatPluginButtonBar = (function (jQuery, Listener) {
+var ChatPluginButtonBar = (function ($, Listener, Handlebars) {
     "use strict";
-    return function (appendTo) {
+
+    var defaults = {
+        appendTo: '#chat-form',
+        template: {
+            bar: '<div class="btn-group buttonbar" />',
+            button: Handlebars.compile('<span class="btn {{className}}" {{{attrs}}}>{{label}}</span>')
+        },
+        defaults: {
+            attrs: {
+                className: 'unknown',
+                attrs: '',
+                label: 'click'
+            }
+        }
+    };
+
+    return function (params) {
         Listener.apply(this, arguments);
 
-        var className = "button-bar",
-            barTag = "<div />",
-            buttonTag = "<span />",
-            box,
-            buttons = {},
-            self = this,
-
-            wrap = function (callback) {
-                return function (e) {
-                    jQuery(this).text(callback(e));
-                };
-            },
+        var self = this,
+            options = $.extend(true, {}, defaults, params),
+            box = $(options.template.bar),
+            buttons = [],
 
             attach = function (event) {
-                var callbacks = event.parameter("callbacks"),
-                    i,
-                    button = jQuery('<span />').text(event.parameter("label")),
-                    args = [];
-
-                for (i = 0; i < callbacks.length; i += 1) {
-                    args.push(wrap(callbacks[i]));
+                var name = event.parameter('className'),
+                    button;
+                if (buttons.indexOf(name) !== -1) {
+                    throw ('Name ' + name + ' has been used already');
                 }
-                jQuery.fn.toggle.apply(button, args);
+                buttons.push(name);
+                button = $(options.template.button(
+                    $.extend(true, {}, options.defaults.attrs, event.parameters())
+                ));
                 box.append(button);
+                event.setReturnValue(button);
                 return true;
             },
 
             init = function () {
-                box = jQuery("<div />").addClass("button-bar");
-                jQuery(appendTo || "#chat-form").append(box);
+                $(options.appendTo).append(options.template.bar);
             };
+
         this.mapping = function () {
             return {
                 "chat.init": [init, 400],
@@ -42,4 +51,4 @@ var ChatPluginButtonBar = (function (jQuery, Listener) {
         };
 
     };
-}(jQuery, Listener));
+}($, Listener, Handlebars));
