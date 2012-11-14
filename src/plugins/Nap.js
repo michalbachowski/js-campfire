@@ -1,16 +1,20 @@
 var ChatPluginNap = (function (jQuery, Listener, Event, setInterval, clearInterval) {
     "use strict";
+    var defaults = {
+        button: {
+            label: 'click',
+            className: 'button-nap',
+            attrs: 'data-toggle="button"'
+        },
+        messageInterval: 4 * 60,    // seconds
+        labelSleep: "take a nap",
+        labelWakeUp: "wake up"
+    };
+
     return function (params) {
         Listener.apply(this, arguments);
 
-        var options = jQuery.extend(
-                {
-                    messageInterval: 4 * 60,    // seconds
-                    labelSleep: "take a nap",
-                    labelWakeUp: "wake up"
-                },
-                params
-            ),
+        var options = jQuery.extend(true, {}, defaults, params),
             self = this,
             intervalTime = options.messageInterval * 1000,
             interval,
@@ -47,11 +51,7 @@ var ChatPluginNap = (function (jQuery, Listener, Event, setInterval, clearInterv
                     new Event(
                         self,
                         "buttonbar.button.attach",
-                        {
-                            label: options.labelSleep,
-                            className: 'button-nap',
-                            attrs: 'data-toggle="button"'
-                        }
+                        jQuery.extend(true, {}, options.button, {label: options.labelSleep})
                     )
                 ).getReturnValue().toggle(sleep, wakeUp);
             },
