@@ -40,7 +40,7 @@ var ChatPluginButtonBar = (function ($, Listener, Handlebars) {
             },
 
             init = function () {
-                $(options.appendTo).append(options.template.bar);
+                $(options.appendTo).append(box);
             };
 
         this.mapping = function () {
