@@ -70,7 +70,7 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars) {
                 if (!allowBan) {
                     return;
                 }
-                var buttonSelector =  '.' + options.buttonClass;
+                var buttonSelector =  '.' + options.button.className;
                 // show hidden buttons
                 $("body " + buttonSelector + ":hidden").show();
                 // handle 'click' events on 'Ban' buttons
