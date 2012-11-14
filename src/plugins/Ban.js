@@ -3,16 +3,42 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars) {
     var defaults = {
         button: {
             label: 'Ban',
-            className: 'button-ban'
+            className: 'button-ban',
+            attrs: 'data-toggle="dropdown"'
         },
+        defaultBanDuration: 60,
+        clickEventSelctor: '.ban-options a',
         userNodeIndicator: '.chat-user',
         template: {
-            ip: Handlebars.compile('<small class="user-ip">{{ip}}</small>')
+            ip: Handlebars.compile('<small class="user-ip">{{ip}}</small>'),
+            options: Handlebars.compile('<ul class="dropdown-menu ban-options">{{#each time}}<li><a href="#" data-seconds="{{this.seconds}}">{{this.label}}</a></li>{{/each}}</ul>')
         },
         methods: {
             ip: function (node, ip) {
                 node.find(".btn-group").first().before(ip);
             }
+        },
+        banOptions: {
+            time: [
+                {label: 'a minute', seconds: 60},
+                {label: '5 minutes', seconds: 300},
+                {label: '10 minutes', seconds: 600},
+                {label: 'quater of and hour', seconds: 900},
+                {label: 'half an hour', seconds: 1800},
+                {label: 'an hour', seconds: 3600},
+                {lbael: '3 hours', seconds: 10800},
+                {label: '6 hours', seconds: 21600},
+                {label: 'half of a day', seconds: 43200},
+                {label: '1 day', seconds: 86400},
+                {label: '2 days', seconds: 172800},
+                {label: '3 days', seconds: 259200},
+                {label: '4 days', seconds: 345600},
+                {label: 'a week', seconds: 604800},
+                {label: '2 weeks', seconds: 1209600},
+                {label: '4 weeks', seconds: 2419200},
+                {label: 'quarter', seconds: 7776000},
+                {label: 'half a year', seconds: 15724800}
+            ]
         }
     };
     return function (params) {
@@ -38,7 +64,7 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars) {
                 );
             },
 
-            banUser = function (nick) {
+            banUser = function (nick, seconds) {
                 // not allowed to ban users? Skip...
                 if (!allowBan) {
                     return;
@@ -53,10 +79,13 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars) {
                 if (data.id > 0) {
                     user = data.id;
                 }
+                if (!isNaN(parseInt(seconds, 10))) {
+                    seconds = options.defaultBanDuration;
+                }
                 self.dispatcher.notifyUntil(
                     new Event(self, "send_message.send", {
                         message: {
-                            message: "$ban user" + user
+                            message: "$ban user " + user + " " + seconds
                         },
                         success: afterBan
                     })
@@ -70,12 +99,14 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars) {
                 if (!allowBan) {
                     return;
                 }
-                var buttonSelector =  '.' + options.button.className;
                 // show hidden buttons
-                $("body " + buttonSelector + ":hidden").show();
+                $("body ." + options.button.className + ":hidden").show();
                 // handle 'click' events on 'Ban' buttons
-                $("body").on('click', buttonSelector, function (e) {
-                    banUser($(e.target).closest(options.userNodeIndicator).get(0).dataset.nick);
+                $("body").on('click', options.clickEventSelctor, function (e) {
+                    banUser(
+                        $(e.target).closest(options.userNodeIndicator).get(0).dataset.nick, // who
+                        e.target.dataset.seconds // for how long
+                    );
                 });
             },
 
@@ -115,7 +146,7 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars) {
                 self.dispatcher.notifyUntil(
                     new Event(self, "users_list.button.add",
                         $.extend(true, options.button, {nick: node.get(0).dataset.nick}))
-                ).getReturnValue().toggle(allowBan);
+                ).getReturnValue().toggle(allowBan).after(options.template.options(options.banOptions));
 
                 return node;
             };
