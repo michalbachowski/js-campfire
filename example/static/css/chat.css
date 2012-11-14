@@ -25,3 +25,10 @@
 body {
     background-color: #ebebeb;
 }
+
+#chat-form fieldset {
+    width: 90%;
+}
+    #chat-form input[type=text] {
+        min-width: 50%;
+    }
