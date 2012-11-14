@@ -44,23 +44,27 @@ var ChatPluginDirect = (function (Listener, $, Handlebars) {
                     username = username + '>' + data.to;
                 }
                 return username;
+            },
+
+            init = function (event) {
+                // handle clicks on "Priv" button
+                $("body").on("click", "." + options.buttonClass, function (e) {
+                    var name = $(e.target).closest(options.userNodeSelector).get(0).dataset.nick,
+                        val = input.val();
+                    if (val.substr(0, 1) === '>') {
+                        return false;
+                    }
+                    input.focus().val('>' + name + ': ' + val);
+                    return false;
+                });
             };
-        // handle clicks on "Priv" button
-        $("body").on("click", "." + options.buttonClass, function (e) {
-            var name = $(e.target).closest(options.userNodeSelector).get(0).dataset.nick,
-                val = input.val();
-            if (val.substr(0, 1) === '>') {
-                return false;
-            }
-            input.focus().val('>' + name + ': ' + val);
-            return false;
-        });
 
         this.mapping = function () {
             return {
                 "display_message.node.filter": display,
                 "users_list.node.filter": [filter, 50],
-                "display_message.name.filter": username
+                "display_message.name.filter": username,
+                "chat.init": init
             };
         };
     };
