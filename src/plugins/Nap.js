@@ -31,14 +31,16 @@ var ChatPluginNap = (function (jQuery, Listener, Event, setInterval, clearInterv
                 if (!interval) {
                     interval = setInterval(send, intervalTime);
                 }
-                return options.labelWakeUp;
+                jQuery(this).text(options.labelWakeUp);
+                return true;
             },
             wakeUp = function () {
                 if (interval) {
                     clearInterval(interval);
                     interval = null;
                 }
-                return options.labelSleep;
+                jQuery(this).text(options.labelSleep);
+                return true;
             },
             init = function () {
                 self.dispatcher.notifyUntil(
@@ -47,13 +49,11 @@ var ChatPluginNap = (function (jQuery, Listener, Event, setInterval, clearInterv
                         "buttonbar.button.attach",
                         {
                             label: options.labelSleep,
-                            callbacks: [
-                                sleep,
-                                wakeUp
-                            ]
+                            className: 'button-nap',
+                            attrs: 'data-toggle="button"'
                         }
                     )
-                );
+                ).getReturnValue().toggle(sleep, wakeUp);
             },
 
             filter = function (event) {
