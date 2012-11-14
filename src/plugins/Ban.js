@@ -1,4 +1,4 @@
-var ChatPluginBan = (function (Listener, Event, $, Handlebars) {
+var ChatPluginBan = (function (Listener, Event, $, Handlebars, window) {
     "use strict";
     var defaults = {
         button: {
@@ -9,6 +9,7 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars) {
         defaultBanDuration: 60,
         clickEventSelctor: '.ban-options a',
         userNodeIndicator: '.chat-user',
+        customDurationPrompt: 'Enter numer of seconds user should be banned',
         template: {
             ip: Handlebars.compile('<small class="user-ip">{{ip}}</small>'),
             options: Handlebars.compile('<ul class="dropdown-menu ban-options">{{#each time}}<li><a href="#" data-seconds="{{this.seconds}}">{{this.label}}</a></li>{{/each}}</ul>')
@@ -37,7 +38,8 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars) {
                 {label: '2 weeks', seconds: 1209600},
                 {label: '4 weeks', seconds: 2419200},
                 {label: 'quarter', seconds: 7776000},
-                {label: 'half a year', seconds: 15724800}
+                {label: 'half a year', seconds: 15724800},
+                {label: 'custom', seconds: 'custom'}
             ]
         }
     };
@@ -79,7 +81,7 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars) {
                 if (data.id > 0) {
                     user = data.id;
                 }
-                if (!isNaN(parseInt(seconds, 10))) {
+                if (isNaN(parseInt(seconds, 10))) {
                     seconds = options.defaultBanDuration;
                 }
                 self.dispatcher.notifyUntil(
@@ -103,9 +105,13 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars) {
                 $("body ." + options.button.className + ":hidden").show();
                 // handle 'click' events on 'Ban' buttons
                 $("body").on('click', options.clickEventSelctor, function (e) {
+                    var seconds = e.target.dataset.seconds;
+                    while (isNaN(parseInt(seconds, 10))) {
+                        seconds = window.prompt(options.customDurationPrompt);
+                    }
                     banUser(
                         $(e.target).closest(options.userNodeIndicator).get(0).dataset.nick, // who
-                        e.target.dataset.seconds // for how long
+                        seconds // for how long
                     );
                 });
             },
@@ -160,4 +166,4 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars) {
         };
 
     };
-}(Listener, Event, $, Handlebars));
+}(Listener, Event, $, Handlebars, window));
