@@ -11,6 +11,7 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars, window) {
         userNodeIndicator: '.chat-user',
         customDurationPrompt: 'Enter numer of seconds user should be banned',
         template: {
+            caret: ' <i class="caret" />',
             ip: Handlebars.compile('<small class="user-ip">{{ip}}</small>'),
             options: Handlebars.compile('<ul class="dropdown-menu ban-options">{{#each time}}<li><a href="#" data-seconds="{{this.seconds}}">{{this.label}}</a></li>{{/each}}</ul>')
         },
@@ -152,7 +153,10 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars, window) {
                 self.dispatcher.notifyUntil(
                     new Event(self, "users_list.button.add",
                         $.extend(true, options.button, {nick: node.get(0).dataset.nick}))
-                ).getReturnValue().toggle(allowBan).after(options.template.options(options.banOptions));
+                ).getReturnValue()
+                    .toggle(allowBan)
+                    .append(options.template.caret)
+                    .after(options.template.options(options.banOptions));
 
                 return node;
             };
