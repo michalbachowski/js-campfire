@@ -1,17 +1,15 @@
 var ChatPluginBan = (function (Listener, Event, $, Handlebars) {
     "use strict";
     var defaults = {
-        label: 'Ban',
-        buttonClass: 'button-ban',
+        button: {
+            label: 'Ban',
+            className: 'button-ban'
+        },
         userNodeIndicator: '.chat-user',
         template: {
-            ip: Handlebars.compile('<small class="user-ip">{{ip}}</small>'),
-            button: Handlebars.compile('<button class="btn btn-small {{buttonClass}}">{{label}}</button>')
+            ip: Handlebars.compile('<small class="user-ip">{{ip}}</small>')
         },
         methods: {
-            button: function (node, button) {
-                node.find(".dropdown-menu, .btn-group").first().append(button);
-            },
             ip: function (node, ip) {
                 node.find(".btn-group").first().before(ip);
             }
@@ -114,7 +112,10 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars) {
                 }
 
                 // add ban button (always, will be hidden when not allowed)
-                options.methods.button(node, $(options.template.button(options)).toggle(allowBan));
+                self.dispatcher.notifyUntil(
+                    new Event(self, "users_list.button.add",
+                        $.extend(true, options.button, {nick: node.get(0).dataset.nick}))
+                ).getReturnValue().toggle(allowBan);
 
                 return node;
             };

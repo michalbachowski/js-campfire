@@ -1,17 +1,11 @@
-var ChatPluginDirect = (function (Listener, $, Handlebars) {
+var ChatPluginDirect = (function (Listener, $, Handlebars, Event) {
     "use strict";
     var defaults = {
         inputSelector: '#chat-form input[type=text]',
         userNodeSelector: '.chat-user',
-        label: 'Priv',
-        buttonClass: 'button-direct',
-        template: {
-            button: Handlebars.compile('<small class="btn btn-small {{buttonClass}}">{{label}}</small>')
-        },
-        methods: {
-            button: function (node, button) {
-                node.find(".dropdown-menu, .btn-group").first().append(button);
-            }
+        button: {
+            label: 'Priv',
+            className: 'button-direct'
         }
     };
 
@@ -24,7 +18,10 @@ var ChatPluginDirect = (function (Listener, $, Handlebars) {
 
             // append "Priv" button to each user node on users list
             filter = function (event, node) {
-                options.methods.button(node, options.template.button(options));
+                self.dispatcher.notifyUntil(
+                    new Event(self, "users_list.button.add",
+                        $.extend(true, options.button, {nick: node.get(0).dataset.nick}))
+                );
                 return node;
             },
 
@@ -48,7 +45,7 @@ var ChatPluginDirect = (function (Listener, $, Handlebars) {
 
             init = function (event) {
                 // handle clicks on "Priv" button
-                $("body").on("click", "." + options.buttonClass, function (e) {
+                $("body").on("click", "." + options.button.className, function (e) {
                     var name = $(e.target).closest(options.userNodeSelector).get(0).dataset.nick,
                         val = input.val();
                     if (val.substr(0, 1) === '>') {
@@ -68,4 +65,4 @@ var ChatPluginDirect = (function (Listener, $, Handlebars) {
             };
         };
     };
-}(Listener, $, Handlebars));
+}(Listener, $, Handlebars, Event));
