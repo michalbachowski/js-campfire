@@ -23,26 +23,12 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars) {
         var self = this,
             options = $.extend(true, {}, defaults, params),
             allowBan = false,
-
-        // handle init
-            success = function (response) {
-                allowBan = response.response.console[0] !== "Access denied" && response.response.console[0];
-            },
-
-            init = function () {
-                // check whether user is allowed to ban others
-                self.dispatcher.notifyUntil(
-                    new Event(self, "send_message.send", {
-                        message: {
-                            message: "$console allowed ban user"
-                        },
-                        success: success
-                    })
-                );
-            },
-        
+ 
         // handle user ban
             afterBan = function (response) {
+                if (response === void 0) {
+                    return;
+                }
                 if (!response.hasOwnProperty('ban')) {
                     return;
                 }
@@ -55,6 +41,10 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars) {
             },
 
             banUser = function (nick) {
+                // not allowed to ban users? Skip...
+                if (!allowBan) {
+                    return;
+                }
                 // fetch user data
                 var data = self.dispatcher.notifyUntil(
                         new Event(self, "users_list.user.get", {
@@ -75,10 +65,40 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars) {
                 );
             },
 
+        // handle init
+            success = function (response) {
+                allowBan = response.response.console[0] !== "Access denied" && response.response.console[0];
+                // handle clicking on button
+                if (!allowBan) {
+                    return;
+                }
+                var buttonSelector =  '.' + options.buttonClass;
+                // show hidden buttons
+                $("body " + buttonSelector + ":hidden").show();
+                // handle 'click' events on 'Ban' buttons
+                $("body").on('click', buttonSelector, function (e) {
+                    banUser($(e.target).closest(options.userNodeIndicator).get(0).dataset.nick);
+                });
+            },
+
+            init = function () {
+                // check whether user is allowed to ban others
+                self.dispatcher.notifyUntil(
+                    new Event(self, "send_message.send", {
+                        message: {
+                            message: "$console allowed ban user"
+                        },
+                        success: success
+                    })
+                );
+            },
+
+            // handle response to ban command
             response = function (event) {
                 afterBan(event.parameter("response"));
             },
 
+            // add Ban button and IP information
             filter = function (event, node) {
                 var data = event.parameter("message"),
 
@@ -93,18 +113,11 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars) {
                     options.methods.ip(node, options.template.ip(data.from));
                 }
 
-                // add ban button (if allowed)
-                if (allowBan) {
-                    options.methods.button(node, options.template.button(options));
-                }
+                // add ban button (always, will be hidden when not allowed)
+                options.methods.button(node, $(options.template.button(options)).toggle(allowBan));
 
                 return node;
             };
-
-        // handle clicking on 
-        $("body").on('click', '.' + options.buttonClass, function (e) {
-            banUser($(e.target).closest(options.userNodeIndicator).get(0).dataset.nick);
-        });
 
         this.mapping = function () {
             return {
