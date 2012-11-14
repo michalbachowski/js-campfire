@@ -8,11 +8,18 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
                     '<img src="{{avatar}}" />' +
                     '<strong>{{nick}}</strong>' +
                     '<small>{{title}}</small>' +
-                    '<div class="btn-group" />' +
+                    '<div class="btn-group user-buttonbar" />' +
                 '</li>'),
-            box: Handlebars.compile('<ul class="users-list span3" />')
+            box: Handlebars.compile('<ul class="users-list span3" />'),
+            button: Handlebars.compile('<span class="btn btn-mini {{className}}" {{{attrs}}}>{{label}}</span>')
+        },
+        defaults: {
+            attrs: {
+                label: 'click',
+                className: '',
+                attrs: ''
+            }
         }
-    
     };
 
     return function (params) {
@@ -48,12 +55,6 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
                     },
 
                     node = $(options.template.user(user));
-
-                // HOOK: filter user node
-                node = self.dispatcher.filter(
-                    new Event(self, "users_list.node.filter", {message: data}),
-                    node
-                ).getReturnValue();
 
                 return node;
             },
@@ -95,6 +96,13 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
                         node: createNode(data),
                         lastResponse: data.date
                     };
+
+                    // HOOK: filter user node
+                    users[data.from.name].node = self.dispatcher.filter(
+                        new Event(self, "users_list.node.filter", {message: data}),
+                        users[data.from.name].node
+                    ).getReturnValue();
+
                     // display node
                     displayNode(users[data.from.name].node);
                 }
@@ -119,6 +127,21 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
                 if (users.hasOwnProperty(nick)) {
                     event.setReturnValue(users[nick].user);
                 }
+                return true;
+            },
+
+            // adds button to user node
+            addButton = function (event) {
+                var nick = event.parameter("nick"),
+                    button;
+                if (!users.hasOwnProperty(nick)) {
+                    return false;
+                }
+                button = $(options.template.button(
+                    $.extend(true, {}, options.defaults.attrs, event.parameters())
+                ));
+                users[nick].node.find('.user-buttonbar').append(button);
+                event.setReturnValue(button);
                 return true;
             },
 
@@ -156,7 +179,8 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
             return {
                 "dispatcher.message.displayed": display,
                 "users_list.node.get": getNode,
-                "users_list.user.get": getUser
+                "users_list.user.get": getUser,
+                "users_list.button.add": addButton
             };
         };
      
