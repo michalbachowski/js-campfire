@@ -20,7 +20,7 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
                 '{{#if options}}' +
                     '<ul class="dropdown-menu ban-options">' +
                     '{{#each options.time}}' +
-                    '<li><a href="#" data-seconds="{{this.seconds}}">{{this.label}}</a></li>' +
+                    '<li><a href="#" data-value="{{this.value}}">{{this.label}}</a></li>' +
                     '{{/each}}' +
                 '</ul>' +
                 '{{/if}}')

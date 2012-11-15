@@ -7,25 +7,25 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars, window) {
             attrs: 'data-toggle="dropdown"',
             options: {
                 time: [
-                    {label: 'a minute', seconds: 60},
-                    {label: '5 minutes', seconds: 300},
-                    {label: '10 minutes', seconds: 600},
-                    {label: 'quater of and hour', seconds: 900},
-                    {label: 'half an hour', seconds: 1800},
-                    {label: 'an hour', seconds: 3600},
-                    {lbael: '3 hours', seconds: 10800},
-                    {label: '6 hours', seconds: 21600},
-                    {label: 'half of a day', seconds: 43200},
-                    {label: '1 day', seconds: 86400},
-                    {label: '2 days', seconds: 172800},
-                    {label: '3 days', seconds: 259200},
-                    {label: '4 days', seconds: 345600},
-                    {label: 'a week', seconds: 604800},
-                    {label: '2 weeks', seconds: 1209600},
-                    {label: '4 weeks', seconds: 2419200},
-                    {label: 'quarter', seconds: 7776000},
-                    {label: 'half a year', seconds: 15724800},
-                    {label: 'custom', seconds: 'custom'}
+                    {label: 'a minute', value: 60},
+                    {label: '5 minutes', value: 300},
+                    {label: '10 minutes', value: 600},
+                    {label: 'quater of and hour', value: 900},
+                    {label: 'half an hour', value: 1800},
+                    {label: 'an hour', value: 3600},
+                    {lbael: '3 hours', value: 10800},
+                    {label: '6 hours', value: 21600},
+                    {label: 'half of a day', value: 43200},
+                    {label: '1 day', value: 86400},
+                    {label: '2 days', value: 172800},
+                    {label: '3 days', value: 259200},
+                    {label: '4 days', value: 345600},
+                    {label: 'a week', value: 604800},
+                    {label: '2 weeks', value: 1209600},
+                    {label: '4 weeks', value: 2419200},
+                    {label: 'quarter', value: 7776000},
+                    {label: 'half a year', value: 15724800},
+                    {label: 'custom', value: 'custom'}
                 ]
             }
         },
@@ -106,7 +106,7 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars, window) {
                 $("body ." + options.button.className + ":hidden").show();
                 // handle 'click' events on 'Ban' buttons
                 $("body").on('click', options.clickEventSelctor, function (e) {
-                    var seconds = e.target.dataset.seconds;
+                    var seconds = e.target.dataset.value;
                     while (isNaN(parseInt(seconds, 10))) {
                         seconds = window.prompt(options.customDurationPrompt);
                     }
