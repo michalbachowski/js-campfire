@@ -29,14 +29,19 @@ var ChatPluginSendMessage = (function (jQuery, Listener, Event) {
                 }
             },
             send = function (event) {
-                var parameters = jQuery(true, {}, defaults, self.dispatcher.filter(
-                    new Event(
-                        self,
-                        "send_message.message.filter",
-                        {event: event}
-                    ),
-                    event.parameters
-                ));
+                var parameters = jQuery.extend(
+                    true,
+                    {},
+                    defaults,
+                    self.dispatcher.filter(
+                        new Event(
+                            self,
+                            "send_message.message.filter",
+                            {event: event}
+                        ),
+                        event.parameters()
+                    ).getReturnValue()
+                );
                 jQuery.ajax({
                     url: prepareUrl(parameters.url),
                     data: event.parameter('message'),
