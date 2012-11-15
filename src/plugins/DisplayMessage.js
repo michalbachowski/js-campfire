@@ -23,7 +23,8 @@ var ChatPluginDisplayMessage = (function (jQuery, Listener, Event, Handlebars) {
                 var message = event.parameter("message"),
                     userName,
                     content,
-                    node;
+                    node,
+                    inbox;
                 if (message === void 0) {
                     return;
                 }
@@ -33,24 +34,30 @@ var ChatPluginDisplayMessage = (function (jQuery, Listener, Event, Handlebars) {
 
                 // HOOK: prepare username
                 userName = self.dispatcher.filter(
-                    new Event(self, "display_message.name.filter", {"message": message}),
+                    new Event(self, "display_message.name.filter", {message: message}),
                     message.from.name
                 ).getReturnValue();
 
                 // HOOK: prepare message
                 content = self.dispatcher.filter(
-                    new Event(self, "display_message.message.filter", {"message": message}),
+                    new Event(self, "display_message.message.filter", {message: message}),
                     message.message
                 ).getReturnValue();
 
                 // HOOK: prepare node
                 node = self.dispatcher.filter(
-                    new Event(self, "display_message.node.filter", {"message": message}),
+                    new Event(self, "display_message.node.filter", {message: message}),
                     createNode(message.from, userName, content, message.id)
                 ).getReturnValue().hide();
 
+                // HOOK: prepare inbox (it is possible to append message to other container)
+                inbox = self.dispatcher.filter(
+                    new Event(self, "display_message.index.filter", {event: event, message: message, node: node}),
+                    $inbox
+                ).getReturnValue();
+
                 // append node
-                $inbox.prepend(node);
+                inbox.prepend(node);
                 node.slideDown("slow");
 
                 return true;
