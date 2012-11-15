@@ -12,7 +12,7 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
                     '<small>{{title}}</small>' +
                     '<div class="btn-group user-buttonbar" />' +
                 '</li>'),
-            box: Handlebars.compile('<ul class="users-list span3" />'),
+            box: Handlebars.compile('<ul class="users-list span3 nav nav-collapse well pull-right" />'),
             button: Handlebars.compile('<span class="btn btn-mini {{className}}" {{{attrs}}}>' +
                 '{{label}}' +
                 '{{#if options}}' +
