@@ -4,7 +4,7 @@ var ChatPluginButtonBar = (function ($, Listener, Handlebars) {
     var defaults = {
         appendTo: '#chat-form',
         template: {
-            bar: '<div class="btn-group buttonbar" />',
+            bar: '<div class="btn-group buttonbar span4" />',
             button: Handlebars.compile('<span class="btn {{className}}" {{{attrs}}}>' +
                 '{{label}}' +
                 '{{#if options}}' +

@@ -27,8 +27,7 @@ body {
 }
 
 #chat-form fieldset {
-    width: 70%;
 }
     #chat-form input[type=text] {
-        min-width: 70%;
+        width: 55%;
     }
