@@ -5,13 +5,26 @@ var ChatPluginButtonBar = (function ($, Listener, Handlebars) {
         appendTo: '#chat-form',
         template: {
             bar: '<div class="btn-group buttonbar" />',
-            button: Handlebars.compile('<span class="btn {{className}}" {{{attrs}}}>{{label}}</span>')
+            button: Handlebars.compile('<span class="btn {{className}}" {{{attrs}}}>' +
+                '{{label}}' +
+                '{{#if options}}' +
+                    ' <i class="caret" />' +
+                '{{/if}}' +
+                '</span>' +
+                '{{#if options}}' +
+                    '<ul class="dropdown-menu {{options.className}}">' +
+                    '{{#each options.alternatives}}' +
+                    '<li><a href="#" data-value="{{this.value}}">{{this.label}}</a></li>' +
+                    '{{/each}}' +
+                '</ul>' +
+                '{{/if}}')
         },
         defaults: {
             attrs: {
                 className: 'unknown',
                 attrs: '',
-                label: 'click'
+                label: 'click',
+                options: void 0
             }
         }
     };
