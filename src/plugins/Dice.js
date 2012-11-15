@@ -47,19 +47,21 @@ var ChatPluginDice = (function ($, Listener, Event) {
                 });
             },
 
-            filter = function (event) {
+            filter = function (event, node) {
                 var data = event.parameter("message");
-                if (data.hasOwnProperty("nap")) {
-                    return;
+                if (!data.hasOwnProperty("dice")) {
+                    return node;
                 }
-                if (Math.floor(Math.random() * 10) > 9) {
-                    return true;
+                if (!data.dice) {
+                    return node;
                 }
+                node.addClass('dice-roll');
+                return node;
             };
 
         this.mapping = function () {
             return {
-            //    "dispatcher.message.display": [filter, 400],
+                "display_message.node.filter": filter,
                 "chat.init": init
             };
         };
