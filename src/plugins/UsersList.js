@@ -18,8 +18,8 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
                 '{{/if}}' +
                 '</span>' +
                 '{{#if options}}' +
-                    '<ul class="dropdown-menu ban-options">' +
-                    '{{#each options.time}}' +
+                    '<ul class="dropdown-menu {{options.className}}">' +
+                    '{{#each options.alternatives}}' +
                     '<li><a href="#" data-value="{{this.value}}">{{this.label}}</a></li>' +
                     '{{/each}}' +
                 '</ul>' +
@@ -29,7 +29,8 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
             attrs: {
                 label: 'click',
                 className: '',
-                attrs: ''
+                attrs: '',
+                options: void 0
             }
         }
     };

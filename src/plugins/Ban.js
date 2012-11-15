@@ -6,7 +6,8 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars, window) {
             className: 'button-ban',
             attrs: 'data-toggle="dropdown"',
             options: {
-                time: [
+                className: 'ban-options',
+                alternatives: [
                     {label: 'a minute', value: 60},
                     {label: '5 minutes', value: 300},
                     {label: '10 minutes', value: 600},
