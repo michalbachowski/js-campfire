@@ -47,7 +47,7 @@ var ChatPluginDisplayMessage = (function (jQuery, Listener, Event, Handlebars) {
                 node = self.dispatcher.filter(
                     new Event(self, "display_message.node.filter", {"message": message}),
                     createNode(message.from, userName, content, message.id)
-                ).getReturnValue();
+                ).getReturnValue().hide();
 
                 // append node
                 $inbox.prepend(node);
