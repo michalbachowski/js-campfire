@@ -1,19 +1,23 @@
-var ChatPluginDisplayMessage = (function (jQuery, Listener, Event) {
+var ChatPluginDisplayMessage = (function (jQuery, Listener, Event, Handlebars) {
     "use strict";
-    return function (inboxId) {
+    var defaults = {
+        inbox: "#inbox",
+        template: {
+            message: Handlebars.compile('<p id="{{id}}" class="const" data-author="{{from.name}}">' +
+                '<strong class="user-name">{{displayName}}</strong> ' +
+                '<span class="message">{{{message}}}</span>' +
+                '</p>')
+        }
+    };
+
+    return function (params) {
         Listener.apply(this, arguments);
         
         var self   = this,
-            $inbox = jQuery(inboxId || "#inbox"),
+            options = jQuery.extend(true, {}, defaults, params),
+            $inbox = jQuery(options.inbox),
             createNode = function (from, displayName, message, id) {
-                return jQuery("<p />")
-                    .addClass("const")
-                    .data("chat-user", from)
-                    .attr("id", "m" + id)
-                    .attr("data-author", from.name) // CSS
-                    .hide()
-                    .append(jQuery("<strong />").append(displayName).addClass("user-name"))
-                    .append(jQuery("<span />").append(" ").append(message).addClass("message"));
+                return jQuery(options.template.message({id: id, from: from, displayName: displayName, message: message}));
             },
             display = function (event) {
                 var message = event.parameter("message"),
@@ -58,4 +62,4 @@ var ChatPluginDisplayMessage = (function (jQuery, Listener, Event) {
             };
         };
     };
-}(jQuery, Listener, Event));
+}(jQuery, Listener, Event, Handlebars));
