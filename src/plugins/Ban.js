@@ -4,7 +4,30 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars, window) {
         button: {
             label: 'Ban',
             className: 'button-ban',
-            attrs: 'data-toggle="dropdown"'
+            attrs: 'data-toggle="dropdown"',
+            options: {
+                time: [
+                    {label: 'a minute', seconds: 60},
+                    {label: '5 minutes', seconds: 300},
+                    {label: '10 minutes', seconds: 600},
+                    {label: 'quater of and hour', seconds: 900},
+                    {label: 'half an hour', seconds: 1800},
+                    {label: 'an hour', seconds: 3600},
+                    {lbael: '3 hours', seconds: 10800},
+                    {label: '6 hours', seconds: 21600},
+                    {label: 'half of a day', seconds: 43200},
+                    {label: '1 day', seconds: 86400},
+                    {label: '2 days', seconds: 172800},
+                    {label: '3 days', seconds: 259200},
+                    {label: '4 days', seconds: 345600},
+                    {label: 'a week', seconds: 604800},
+                    {label: '2 weeks', seconds: 1209600},
+                    {label: '4 weeks', seconds: 2419200},
+                    {label: 'quarter', seconds: 7776000},
+                    {label: 'half a year', seconds: 15724800},
+                    {label: 'custom', seconds: 'custom'}
+                ]
+            }
         },
         defaultBanDuration: 60,
         clickEventSelctor: '.ban-options a',
@@ -19,29 +42,6 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars, window) {
             ip: function (node, ip) {
                 node.find(".btn-group").first().before(ip);
             }
-        },
-        banOptions: {
-            time: [
-                {label: 'a minute', seconds: 60},
-                {label: '5 minutes', seconds: 300},
-                {label: '10 minutes', seconds: 600},
-                {label: 'quater of and hour', seconds: 900},
-                {label: 'half an hour', seconds: 1800},
-                {label: 'an hour', seconds: 3600},
-                {lbael: '3 hours', seconds: 10800},
-                {label: '6 hours', seconds: 21600},
-                {label: 'half of a day', seconds: 43200},
-                {label: '1 day', seconds: 86400},
-                {label: '2 days', seconds: 172800},
-                {label: '3 days', seconds: 259200},
-                {label: '4 days', seconds: 345600},
-                {label: 'a week', seconds: 604800},
-                {label: '2 weeks', seconds: 1209600},
-                {label: '4 weeks', seconds: 2419200},
-                {label: 'quarter', seconds: 7776000},
-                {label: 'half a year', seconds: 15724800},
-                {label: 'custom', seconds: 'custom'}
-            ]
         }
     };
     return function (params) {
@@ -153,10 +153,7 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars, window) {
                 self.dispatcher.notifyUntil(
                     new Event(self, "users_list.button.add",
                         $.extend(true, options.button, {nick: node.get(0).dataset.nick}))
-                ).getReturnValue()
-                    .toggle(allowBan)
-                    .append(options.template.caret)
-                    .after(options.template.options(options.banOptions));
+                ).getReturnValue().toggle(allowBan);
 
                 return node;
             };

@@ -11,7 +11,19 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
                     '<div class="btn-group user-buttonbar" />' +
                 '</li>'),
             box: Handlebars.compile('<ul class="users-list span3" />'),
-            button: Handlebars.compile('<span class="btn btn-mini {{className}}" {{{attrs}}}>{{label}}</span>')
+            button: Handlebars.compile('<span class="btn btn-mini {{className}}" {{{attrs}}}>' +
+                '{{label}}' +
+                '{{#if options}}' +
+                    ' <i class="caret" />' +
+                '{{/if}}' +
+                '</span>' +
+                '{{#if options}}' +
+                    '<ul class="dropdown-menu ban-options">' +
+                    '{{#each options.time}}' +
+                    '<li><a href="#" data-seconds="{{this.seconds}}">{{this.label}}</a></li>' +
+                    '{{/each}}' +
+                '</ul>' +
+                '{{/if}}')
         },
         defaults: {
             attrs: {
