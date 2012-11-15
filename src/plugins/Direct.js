@@ -38,7 +38,7 @@ var ChatPluginDirect = (function (Listener, $, Handlebars, Event) {
             username = function (event, username) {
                 var data = event.parameter("message");
                 if (data.hasOwnProperty('to') && data.to.length > 0) {
-                    username = username + '>' + data.to;
+                    username = username + ' > ' + data.to;
                 }
                 return username;
             },
