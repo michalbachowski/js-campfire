@@ -1,5 +1,12 @@
-var ChatPluginSendMessage = (function (jQuery, Listener) {
+var ChatPluginSendMessage = (function (jQuery, Listener, Event) {
     "use strict";
+    var defaults = {
+        url: void 0,
+        message: '',
+        success: void 0,
+        error: void 0
+    };
+
     return function (defaultUrl, timeout) {
         Listener.apply(this, arguments);
 
@@ -22,21 +29,29 @@ var ChatPluginSendMessage = (function (jQuery, Listener) {
                 }
             },
             send = function (event) {
+                var parameters = jQuery(true, {}, defaults, self.dispatcher.filter(
+                    new Event(
+                        self,
+                        "send_message.message.filter",
+                        {event: event}
+                    ),
+                    event.parameters
+                ));
                 jQuery.ajax({
-                    url: prepareUrl(event.parameter("url")),
+                    url: prepareUrl(parameters.url),
                     data: event.parameter('message'),
                     dataType: "text",
                     type: "POST",
                     success: function (response) {
                         var params = jQuery.parseJSON(response);
                         if (params.status !== 1) {
-                            invokeCallback(params, event.parameter("error"));
+                            invokeCallback(params, parameters.error);
                         } else {
-                            invokeCallback(params, event.parameter("success"));
+                            invokeCallback(params, parameters.success);
                         }
                     },
                     error: function (response) {
-                        invokeCallback(response, event.parameter("error"));
+                        invokeCallback(response, parameters.error);
                     },
                     timeout: (timeout || 10) * 1000
                 });
@@ -49,4 +64,4 @@ var ChatPluginSendMessage = (function (jQuery, Listener) {
             };
         };
     };
-}(jQuery, Listener));
+}(jQuery, Listener, Event));
