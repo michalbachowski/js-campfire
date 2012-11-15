@@ -2,7 +2,9 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
     "use strict";
     var defaults = {
         refresh: 5,
-        insert: '#inbox',
+        insert: function (box) {
+            $('#inbox').before(box);
+        },
         template: {
             user: Handlebars.compile('<li class="row-fluid chat-user" data-nick="{{nick}}">' +
                     '<img src="{{avatar}}" />' +
@@ -198,6 +200,6 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
         };
      
         // add users box
-        $(options.insert).after(box);
+        options.insert(box);
     };
 }(Listener, Event, $, Handlebars, setInterval));
