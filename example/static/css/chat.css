@@ -1,8 +1,6 @@
 /* Landscape phones and down */
 @media (max-width: 480px) {  
     .users-list:not(.in) {
-        min-height: 0 !important;
-        padding: 0 !important;
         border-width: 0 !important;
     }
 }
@@ -10,8 +8,6 @@
 /* Landscape phone to portrait tablet */
 @media (max-width: 979px) {
     .users-list:not(.in) {
-        min-height: 0 !important;
-        padding: 0 !important;
         border-width: 0 !important;
     }
 }
@@ -42,3 +38,15 @@ body {
     #chat-form input[type=text] {
         width: 55%;
     }
+
+    .users-list {
+        min-height: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+        .users-list li:first-child {
+            margin-top: 19px;
+        }
+        .users-list li:last-child {
+            margin-bottom: 19px;
+        }
