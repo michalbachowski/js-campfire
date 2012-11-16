@@ -6,7 +6,13 @@ var ChatPluginDisplayMessage = (function (jQuery, Listener, Event, Handlebars) {
             message: Handlebars.compile('<p id="{{id}}" class="const" data-author="{{from.name}}">' +
                 '<strong class="user-name">{{displayName}}</strong> ' +
                 '<span class="message">{{{message}}}</span>' +
-                '</p>')
+                '</p>'),
+            inbox: '<div class="span12" id="inbox"></div>'
+        },
+        methods: {
+            displayInbox: function (inbox) {
+                inbox.appendTo("#body");
+            }
         }
     };
 
@@ -15,7 +21,7 @@ var ChatPluginDisplayMessage = (function (jQuery, Listener, Event, Handlebars) {
         
         var self   = this,
             options = jQuery.extend(true, {}, defaults, params),
-            $inbox = jQuery(options.inbox),
+            $inbox,
             createNode = function (from, displayName, message, id) {
                 return jQuery(options.template.message({id: id, from: from, displayName: displayName, message: message}));
             },
@@ -61,11 +67,19 @@ var ChatPluginDisplayMessage = (function (jQuery, Listener, Event, Handlebars) {
                 node.slideDown("slow");
 
                 return true;
+            },
+            init = function (event) {
+                $inbox = self.dispatcher.filter(
+                    new Event(self, "display_message.inbox.filter", {event: event}),
+                    jQuery(options.template.inbox)
+                ).getReturnValue();
+                options.methods.displayInbox($inbox);
             };
 
         this.mapping = function () {
             return {
-                "dispatcher.message.display": display
+                "dispatcher.message.display": display,
+                "chat.init": [init, 100]
             };
         };
     };

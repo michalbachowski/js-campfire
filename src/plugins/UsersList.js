@@ -2,8 +2,13 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
     "use strict";
     var defaults = {
         refresh: 5,
-        insert: function (box) {
-            $('#inbox').before(box);
+        methods: {
+            insert: function (box) {
+                $('#inbox').before(box);
+            },
+            prepareInbox: function ($inbox) {
+                $inbox.removeClass('span12').addClass('span9');
+            }
         },
         template: {
             user: Handlebars.compile('<li class="row-fluid chat-user" data-nick="{{nick}}">' +
@@ -44,7 +49,7 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
             users = {},
             options = $.extend(true, {}, defaults, params),
             cleaningTimeout = options.refresh * 60,
-            box = $(options.template.box()),
+            $box,
             userTemplate = options.template.user,
 
             // creates new node
@@ -78,7 +83,7 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
             displayNode = function (node) {
                 // find place where to put new node
                 var nick = node.get(0).dataset.nick,
-                    destination = box
+                    destination = $box
                         .children()
                         .filter(function () {
                             return this.dataset.nick > nick;
@@ -87,7 +92,7 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
 
                 // append node
                 if (0 === destination.length) {
-                    box.append(node);
+                    $box.append(node);
                 } else {
                     destination.before(node);
                 }
@@ -185,6 +190,19 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
                     users[i].node.slideUp("slow", nodeRemover);
                     delete users[i];
                 }
+            },
+
+            // init class
+            init = function (event) {
+                // add users box
+                $box = $(options.template.box());
+                options.methods.insert($box);
+            },
+
+            // prepareInbox to work with users list
+            prepareInbox = function (event, $inbox) {
+                options.methods.prepareInbox($inbox);
+                return $inbox;
             };
 
         // start cleaner loop
@@ -195,11 +213,11 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
                 "dispatcher.message.displayed": display,
                 "users_list.node.get": getNode,
                 "users_list.user.get": getUser,
-                "users_list.button.add": addButton
+                "users_list.button.add": addButton,
+                "display_message.inbox.filter": prepareInbox,
+                "chat.init": init
             };
         };
      
-        // add users box
-        options.insert(box);
     };
 }(Listener, Event, $, Handlebars, setInterval));
