@@ -1,16 +1,41 @@
-var ChatPluginForm = (function (jQuery, Listener, Event) {
+var ChatPluginForm = (function (jQuery, Listener, Event, Handlebars) {
     "use strict";
-    return function (formId) {
+    var defaults = {
+        template: {
+            form: Handlebars.compile('<form action="{{action}}" method="post" id="chat-form" class="row-fluid form-inline">' +
+                '<fieldset class="input-append span8">' +
+                '<input type="text" name="message" placeholder="{{placeholder}}" autocomplete="off" />' +
+                '<input type="submit" value="{{label}}" class="btn" />' +
+                '</fieldset>' +
+                '</form>')
+        },
+        options: {
+            form: {
+                action: '/campfire/reply.json',
+                placeholder: 'Type message...',
+                label: 'Reply'
+            }
+        },
+        methods: {
+            display: function (form) {
+                form.insertBefore("#body");
+            }
+        }
+    };
+
+    return function (params) {
         Listener.apply(this, arguments);
 
         var self = this,
-            form,
+            $form,
+            options = jQuery.extend(true, {}, defaults, params),
+
             getForm = function (event) {
-                event.setReturnValue(form);
+                event.setReturnValue($form);
                 return true;
             },
             formToDict = function () {
-                var fields = form.serializeArray(),
+                var fields = $form.serializeArray(),
                     json = {},
                     i = 0;
                 for (i = 0; i < fields.length; i += 1) {
@@ -43,7 +68,7 @@ var ChatPluginForm = (function (jQuery, Listener, Event) {
             },
 
             clear = function () {
-                form.find("input[type=text]").val("").select();
+                $form.find("input[type=text]").val("").select();
             },
 
             onSubmit = function () {
@@ -66,26 +91,30 @@ var ChatPluginForm = (function (jQuery, Listener, Event) {
                     throw ("Event 'send_message.send' was not processed!");
                 }
                 clear();
-            };
+            },
 
-        // bind form events
-        form = jQuery(formId || "#chat-form").bind("submit", function (e) {
-            e.stopPropagation();
-            onSubmit();
-            return false;
-        }).bind("keypress", function (e) {
-            if (13 === e.keyCode) {
-                e.stopPropagation();
-                onSubmit();
-                return false;
-            }
-        });
+            // bind form events
+            init = function (event) {
+                $form = jQuery(options.template.form(options.options.form)).bind("submit", function (e) {
+                    e.stopPropagation();
+                    onSubmit();
+                    return false;
+                }).bind("keypress", function (e) {
+                    if (13 === e.keyCode) {
+                        e.stopPropagation();
+                        onSubmit();
+                        return false;
+                    }
+                });
+                options.methods.display($form);
+            };
 
         // set mapping
         this.mapping = function () {
             return {
-                "form.get": getForm
+                "form.get": getForm,
+                "chat.init": init
             };
         };
     };
-}(jQuery, Listener, Event));
+}(jQuery, Listener, Event, Handlebars));
