@@ -62,7 +62,7 @@ var ChatPluginButtonBar = (function ($, Listener, Handlebars) {
 
         this.mapping = function () {
             return {
-                "chat.init": [init, 400],
+                "chat.init": [init, 50],
                 "buttonbar.button.attach": attach
             };
         };
