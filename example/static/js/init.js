@@ -4,8 +4,10 @@ var campfire = new Chat(function (callback) {
 
 campfire
     .attach(new ChatPluginAuth({
-        loginUrl: '/jbapp/chat/ognisko/wejscie.json',
-        logoutUrl: '/jbapp/chat/ognisko/wyjscie.json'
+        url: {
+            login: '/jbapp/chat/ognisko/wejscie.json',
+            logout: '/jbapp/chat/ognisko/wyjscie.json'
+        }
     }))
     .attach(new ChatPluginBan())
     .attach(new ChatPluginButtonBar())

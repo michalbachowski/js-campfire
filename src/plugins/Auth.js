@@ -1,28 +1,64 @@
 var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
     "use strict";
+    var defaults = {
+        url: {
+            login: '/chat/entrance.json',
+            logout: '/chat/exit.json'
+        },
+        options: {
+            dialog: {
+                header: 'Login',
+                label: "Nickname",
+                placeholder: "Nickname…",
+                desc: '',
+                close: 'Close',
+                submit: 'Submit'
+            }
+        },
+        template: {
+            dialog: Handlebars.compile(' ' +
+                '<form class="modal hide fade form-horizontal" tabindex="-1" role="dialog" aria-hidden="true">' +
+                '   <div class="modal-header">' +
+                '       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>' +
+                '       <h3>{{header}}</h3>' +
+                '   </div>' +
+                '   <div class="modal-body">' +
+                '       <div class="text control-group">' +
+                '           <label class="control-label">{{label}}</label>' +
+                '           <div class="controls">' +
+                '               <input type="text" placeholder="{{placeholder}}">' +
+                '               <p class="help-block">{{desc}}</p>' +
+                '           </div>' +
+                '       </div>' +
+                '   </div>' +
+                '   <div class="modal-footer">' +
+                '       <a href="#" class="btn" data-dismiss="modal" aria-hidden="true">{{close}}</a>' +
+                '       <button type="submit" class="btn btn-primary">{{submit}}</button>' +
+                '   </div>' +
+                '</form>')
+        },
+        methods: {
+            showDialog: function (dialog) {
+                dialog.modal('show');
+            },
+
+            hideDialog: function (dialog) {
+                dialog.modal('hide');
+            },
+
+            selectNick: function (form) {
+                return $(form).find("input[type=text]").val();
+            }
+        }
+    };
 
     return function (params) {
         Listener.apply(this, arguments);
 
         var self = this,
-            options = $.extend(
-                true,
-                {
-                    url: {
-                        login: '/chat/entrance.json',
-                        logout: '/chat/exit.json'
-                    },
-                    lang: {
-                        header: 'Login',
-                        label: "Nickname",
-                        placeholder: "Nickname…",
-                        desc: '',
-                        close: 'Close',
-                        submit: 'Submit'
-                    }
-                },
-                params
-            ),
+            options = $.extend(true, {}, defaults, params),
+            $dialog,
+            // send notifications
             notifyLoggedOut = function (message) {
                 self.dispatcher.notify(
                     new Event(self, "auth.logout", message)
@@ -33,6 +69,7 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
                     new Event(self, "auth.login", message)
                 );
             },
+            // check information about user
             whoami = function (response) {
                 if (response.status !== 1 || !response.response.hasOwnProperty('whoami')) {
                     return;
@@ -58,51 +95,32 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
                 self.dispatcher.notifyUntil(
                     new Event(self, "send_message.send", message)
                 );
+            },
+            // dialog initialization
+            initDialog = function () {
+                if ($dialog === void 0) {
+                    $dialog = $(options.template.dialog(options.options.dialog)).on("submit", function (e) {
+                        self.login(options.methods.selectNick(e.target));
+                        return false;
+                    });
+                }
+                return $dialog;
             };
 
         /**
          * public methods
          */
-        self.dialog = (function () {
-            var $dialog,
-                initDialog = function () {
-                    if ($dialog !== void 0) {
-                        return;
-                    }
-                    $dialog = Handlebars.compile(' ' +
-                        '<form class="modal hide fade form-horizontal" tabindex="-1" role="dialog" aria-hidden="true">' +
-                        '   <div class="modal-header">' +
-                        '       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>' +
-                        '       <h3>{{header}}</h3>' +
-                        '   </div>' +
-                        '   <div class="modal-body">' +
-                        '       <div class="text control-group">' +
-                        '           <label class="control-label">{{label}}</label>' +
-                        '           <div class="controls">' +
-                        '               <input type="text" placeholder="{{placeholder}}">' +
-                        '               <p class="help-block">{{desc}}</p>' +
-                        '           </div>' +
-                        '       </div>' +
-                        '   </div>' +
-                        '   <div class="modal-footer">' +
-                        '       <a href="#" class="btn" data-dismiss="modal" aria-hidden="true">{{close}}</a>' +
-                        '       <button type="submit" class="btn btn-primary">{{submit}}</button>' +
-                        '   </div>' +
-                        '</form>')(options.lang);
-                };
-            return {
-                show: function () {
-                    initDialog();
-                    $dialog.modal('show');
-                },
+        // show/hide dialog
+        self.dialog = {
+            show: function () {
+                options.methods.showDialog(initDialog());
+            },
 
-                hide: function () {
-                    initDialog();
-                    $dialog.modal('hide');
-                }
-            };
-        }());
-
+            hide: function () {
+                options.methods.hideDialog(initDialog());
+            }
+        };
+        // login guest
         self.login = function (nick) {
             if (!nick) {
                 self.dialog.show();
@@ -122,7 +140,7 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
                 new Event(self, "send_message.send", message)
             );
         };
-
+        // logout guest
         self.logout = function () {
             var message = {
                 url: options.url.logout,
@@ -138,6 +156,7 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
             );
         };
 
+        // event mapping
         self.mapping = function () {
             return {
                 "chat.init": init
