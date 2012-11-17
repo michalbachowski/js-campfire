@@ -58,3 +58,7 @@ body {
     font-weight: normal;
     font-style: italic;
 }
+.dice-roll strong, .dice-roll em, .dice-roll span {
+    color: #ab0000;
+    font-weight: bold;
+}
