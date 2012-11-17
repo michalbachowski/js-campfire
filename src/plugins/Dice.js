@@ -55,13 +55,14 @@ var ChatPluginDice = (function ($, Listener, Event) {
                 if (!data.dice) {
                     return node;
                 }
+                data.color = void 0;
                 node.addClass('dice-roll');
                 return node;
             };
 
         this.mapping = function () {
             return {
-                "display_message.node.filter": filter,
+                "display_message.node.filter": [filter, 500],
                 "chat.init": init
             };
         };
