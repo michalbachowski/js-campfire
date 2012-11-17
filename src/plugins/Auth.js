@@ -13,6 +13,12 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
                 desc: '',
                 close: 'Close',
                 submit: 'Submit'
+            },
+            userInfo: {
+                nick: 'Guest',
+                logoutLabel: 'logout',
+                loginLabel: 'login',
+                logged: false
             }
         },
         template: {
@@ -35,7 +41,24 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
                 '       <a href="#" class="btn" data-dismiss="modal" aria-hidden="true">{{close}}</a>' +
                 '       <button type="submit" class="btn btn-primary">{{submit}}</button>' +
                 '   </div>' +
-                '</form>')
+                '</form>'),
+            userInfo: Handlebars.compile(' ' +
+                '<div class="btn-group pull-right">' +
+                    '<a class="btn btn-warning button-username" href="#">' +
+                        '<i class="icon icon-user"></i>' +
+                        '{{nick}}' +
+                    '</a>' +
+                    '<button class="btn btn-warning dropdown-toggle" data-toggle="dropdown">' +
+                        '<span class="caret"></span>' +
+                    '</button>' +
+                    '<ul class="dropdown-menu">' +
+                        '{{#if logged}}' +
+                        '<li><a href="#" class="button-logout">{{logoutLabel}}</a></li>' +
+                        '{{else}}' +
+                        '<li><a href="#" class="button-login">{{loginLabel}}</a></li>' +
+                        '{{/if}}' +
+                    '</ul>' +
+                '</div>')
         },
         methods: {
             showDialog: function (dialog) {
@@ -44,6 +67,10 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
 
             hideDialog: function (dialog) {
                 dialog.modal('hide');
+            },
+
+            showUserInfo: function (box) {
+                $(".navbar-inner .container-fluid").append(box);
             },
 
             selectNick: function (form) {
@@ -58,15 +85,35 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
         var self = this,
             options = $.extend(true, {}, defaults, params),
             $dialog,
+            $userInfo,
             // send notifications
+            initUserInfo = function (nick) {
+                if ($userInfo !== void 0) {
+                    $userInfo.remove();
+                    $userInfo = void 0;
+                }
+                var user = {};
+                if (nick !== void 0) {
+                    user = {
+                        nick: nick,
+                        logged: true
+                    };
+                }
+                $userInfo = $(options.template.userInfo($.extend(true, {}, options.options.userInfo, user)));
+                return $userInfo;
+            },
             notifyLoggedOut = function (message) {
+                var box = initUserInfo();
+                options.methods.showUserInfo(box);
                 self.dispatcher.notify(
-                    new Event(self, "auth.logout", message)
+                    new Event(self, "auth.logout", {nick: message, box: box})
                 );
             },
             notifyLoggedIn = function (message) {
+                var box = initUserInfo(message);
+                options.methods.showUserInfo(box);
                 self.dispatcher.notify(
-                    new Event(self, "auth.login", message)
+                    new Event(self, "auth.login", {nick: message, box: box})
                 );
             },
             // check information about user
@@ -74,19 +121,21 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
                 if (response.status !== 1 || !response.response.hasOwnProperty('whoami')) {
                     return;
                 }
-                if (response.response.whoami[0].hasAccount) {
-                    notifyLoggedOut(response.response.whoami[0].name);
-                } else {
+                if (response.response.whoami[0].logged) {
                     notifyLoggedIn(response.response.whoami[0].name);
+                } else {
+                    notifyLoggedOut(response.response.whoami[0].name);
+                    self.login();
                 }
                 self.dialog.hide();
             },
             onError = function (response, e) {
                 if (403 === response.status) {
+                    notifyLoggedOut();
                     self.login();
                 }
             },
-            init = function () {
+            checkStatus = function () {
                 var message = {
                     message: { message: "$whoami tell" },
                     success: whoami,
@@ -95,6 +144,20 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
                 self.dispatcher.notifyUntil(
                     new Event(self, "send_message.send", message)
                 );
+            },
+            // caled on chat init
+            init = function (event) {
+                // check login status
+                checkStatus();
+
+                // handle login/logout buttons
+                $('body').on('click', '.button-logout', function (e) {
+                    self.logout();
+                    return;
+                }).on('click', '.button-login', function (e) {
+                    self.login();
+                    return;
+                });
             },
             // dialog initialization
             initDialog = function () {
@@ -131,8 +194,7 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
                 url: options.url.login,
                 message: { login: nick },
                 success: function (response) {
-                    init();
-                    notifyLoggedIn(response.response.auth[0]);
+                    checkStatus();
                 },
                 error: onError
             };
@@ -146,8 +208,9 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
                 url: options.url.logout,
                 message: {},
                 success: function (response) {
-                    self.login();
-                    notifyLoggedOut(response.response.auth[0]);
+                    checkStatus();
+//                    notifyLoggedOut(response.response.auth[0]);
+//                    self.login();
                 },
                 error: onError
             };
