@@ -20,7 +20,7 @@ campfire
     .attach(new ChatPluginMessageTime())
     .attach(new ChatPluginNap())
     .attach(new ChatPluginPuppet())
-    .attach(new ChatPluginSendMessage('/jbapp/chat/ognisko/odpowiedz.json'))
+    .attach(new ChatPluginSendMessage({url: '/jbapp/chat/ognisko/odpowiedz.json'}))
     .attach(new ChatPluginTitleAlert())
     .attach(new ChatPluginTyping())
     .attach(new ChatPluginUrlize())

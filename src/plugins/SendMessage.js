@@ -1,20 +1,24 @@
 var ChatPluginSendMessage = (function (jQuery, Listener, Event) {
     "use strict";
     var defaults = {
-        url: void 0,
-        message: '',
-        success: void 0,
-        error: void 0
+        ajax: {
+            url: void 0,
+            message: '',
+            success: void 0,
+            error: void 0
+        },
+        url: "/chat/response.json",
+        timeout: 10 // seconds
     };
 
-    return function (defaultUrl, timeout) {
+    return function (params) {
         Listener.apply(this, arguments);
 
         var self   = this,
-            url = defaultUrl || "/chat/response.json",
+            options = jQuery.extend(true, {}, defaults, params),
             prepareUrl = function (eventUrl) {
                 if (eventUrl === void 0) {
-                    return url;
+                    return options.url;
                 }
                 return eventUrl;
             },
@@ -32,7 +36,7 @@ var ChatPluginSendMessage = (function (jQuery, Listener, Event) {
                 var parameters = jQuery.extend(
                     true,
                     {},
-                    defaults,
+                    options.ajax,
                     self.dispatcher.filter(
                         new Event(
                             self,
@@ -58,11 +62,11 @@ var ChatPluginSendMessage = (function (jQuery, Listener, Event) {
                     error: function (response) {
                         invokeCallback(response, parameters.error);
                     },
-                    timeout: (timeout || 10) * 1000
+                    timeout: options.timeout * 1000
                 });
                 return true;
             };
-     
+        
         this.mapping = function () {
             return {
                 "send_message.send": send
