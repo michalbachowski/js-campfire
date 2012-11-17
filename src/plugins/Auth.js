@@ -15,10 +15,11 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
                 submit: 'Submit'
             },
             userInfo: {
-                nick: 'Guest',
+                name: 'Guest',
                 logoutLabel: 'logout',
                 loginLabel: 'login',
-                logged: false
+                logged: false,
+                hasAccount: false
             }
         },
         template: {
@@ -46,14 +47,17 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
                 '<div class="btn-group pull-right">' +
                     '<a class="btn btn-warning button-username" href="#">' +
                         '<i class="icon icon-user"></i>' +
-                        '{{nick}}' +
+                        '{{name}}' +
                     '</a>' +
                     '<button class="btn btn-warning dropdown-toggle" data-toggle="dropdown">' +
                         '<span class="caret"></span>' +
                     '</button>' +
                     '<ul class="dropdown-menu">' +
                         '{{#if logged}}' +
-                        '<li><a href="#" class="button-logout">{{logoutLabel}}</a></li>' +
+                            '{{#if hasAccount}} ' +
+                            '{{else}}' +
+                            '<li><a href="#" class="button-logout">{{logoutLabel}}</a></li>' +
+                            '{{/if}}' +
                         '{{else}}' +
                         '<li><a href="#" class="button-login">{{loginLabel}}</a></li>' +
                         '{{/if}}' +
@@ -87,17 +91,10 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
             $dialog,
             $userInfo,
             // send notifications
-            initUserInfo = function (nick) {
+            initUserInfo = function (user) {
                 if ($userInfo !== void 0) {
                     $userInfo.remove();
                     $userInfo = void 0;
-                }
-                var user = {};
-                if (nick !== void 0) {
-                    user = {
-                        nick: nick,
-                        logged: true
-                    };
                 }
                 $userInfo = $(options.template.userInfo($.extend(true, {}, options.options.userInfo, user)));
                 return $userInfo;
@@ -109,11 +106,11 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
                     new Event(self, "auth.logout", {nick: message, box: box})
                 );
             },
-            notifyLoggedIn = function (message) {
-                var box = initUserInfo(message);
+            notifyLoggedIn = function (user) {
+                var box = initUserInfo(user);
                 options.methods.showUserInfo(box);
                 self.dispatcher.notify(
-                    new Event(self, "auth.login", {nick: message, box: box})
+                    new Event(self, "auth.login", {user: user, box: box})
                 );
             },
             // check information about user
@@ -122,7 +119,7 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
                     return;
                 }
                 if (response.response.whoami[0].logged) {
-                    notifyLoggedIn(response.response.whoami[0].name);
+                    notifyLoggedIn(response.response.whoami[0]);
                 } else {
                     notifyLoggedOut(response.response.whoami[0].name);
                     self.login();
@@ -209,8 +206,6 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
                 message: {},
                 success: function (response) {
                     checkStatus();
-//                    notifyLoggedOut(response.response.auth[0]);
-//                    self.login();
                 },
                 error: onError
             };
