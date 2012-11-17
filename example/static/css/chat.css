@@ -33,20 +33,28 @@ body {
     background-color: #ebebeb;
 }
 
+/* form */
 #chat-form fieldset {
 }
     #chat-form input[type=text] {
         width: 55%;
     }
 
-    .users-list {
-        min-height: 0 !important;
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
+/* users list */
+.users-list {
+    min-height: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+    .users-list li:first-child {
+        margin-top: 19px;
     }
-        .users-list li:first-child {
-            margin-top: 19px;
-        }
-        .users-list li:last-child {
-            margin-bottom: 19px;
-        }
+    .users-list li:last-child {
+        margin-bottom: 19px;
+    }
+
+/* chat messages */
+.me strong, .me em, .me span {
+    font-weight: normal;
+    font-style: italic;
+}
