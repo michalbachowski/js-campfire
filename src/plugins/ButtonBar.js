@@ -2,7 +2,6 @@ var ChatPluginButtonBar = (function ($, Listener, Handlebars) {
     "use strict";
 
     var defaults = {
-        appendTo: '#chat-form',
         template: {
             bar: '<div class="btn-group buttonbar span4" />',
             button: Handlebars.compile('<span class="btn {{className}}" {{{attrs}}}>' +
@@ -18,6 +17,11 @@ var ChatPluginButtonBar = (function ($, Listener, Handlebars) {
                     '{{/each}}' +
                 '</ul>' +
                 '{{/if}}')
+        },
+        methods: {
+            display: function (bar) {
+                $("#chat-form").append(bar);
+            }
         },
         defaults: {
             attrs: {
@@ -53,7 +57,7 @@ var ChatPluginButtonBar = (function ($, Listener, Handlebars) {
             },
 
             init = function () {
-                $(options.appendTo).append(box);
+                options.methods.display(box);
             };
 
         this.mapping = function () {
