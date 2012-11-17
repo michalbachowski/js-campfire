@@ -12,6 +12,9 @@ var ChatPluginColor = (function (Listener) {
             if (null === data.color) {
                 return node;
             }
+            if (data.color === void 0) {
+                return node;
+            }
             if (0 === data.color.length) {
                 return node;
             }
