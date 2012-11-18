@@ -36,7 +36,7 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars, window) {
         customDurationPrompt: 'Enter numer of seconds user should be banned',
         template: {
             caret: ' <i class="caret" />',
-            ip: Handlebars.compile('<small class="user-ip">{{ip}}</small>'),
+            ip: Handlebars.compile('<small class="user-ip muted">{{ip}}</small>'),
             options: Handlebars.compile('<ul class="dropdown-menu ban-options">{{#each time}}<li><a href="#" data-seconds="{{this.seconds}}">{{this.label}}</a></li>{{/each}}</ul>')
         },
         methods: {
