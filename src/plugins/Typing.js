@@ -130,7 +130,7 @@ var ChatPluginTyping = (function (Listener, Event, $, clearTimeout, setTimeout) 
 
         this.mapping = function () {
             return {
-                "dispatcher.message.display": [display, 200],
+                "dispatcher.message.display": [display, 500],
                 "form.message.filter": filter,
                 "chat.init": init,
                 "title_alert.allow.filter": titleAlertAllow
