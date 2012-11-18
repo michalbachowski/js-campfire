@@ -1,7 +1,15 @@
 /* Landscape phones and down */
 @media (max-width: 480px) {  
+}
+
+/* portrait tablet */
+@media (max-width: 768px) {
     .users-list:not(.in) {
         border-width: 0 !important;
+        margin-bottom: 1em;
+    }
+    #inbox {
+        clear: both;
     }
 }
 
@@ -13,7 +21,9 @@
 }
 
 /* Portrait tablet to landscape and desktop */
-@media (min-width: 768px) and (max-width: 979px) {  }
+@media (min-width: 768px) and (max-width: 979px) {  
+
+}
 /* small/large desktop */
 @media (min-width: 980px) {
     body {
