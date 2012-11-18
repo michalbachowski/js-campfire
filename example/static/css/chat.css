@@ -76,6 +76,10 @@ body {
         .users-list .chat-user .user-ip {
         }
 
+/* inbox */
+#inbox {
+    margin-left: 0;
+}
 /* chat messages */
 .me strong, .me em, .me span {
     font-weight: normal;
