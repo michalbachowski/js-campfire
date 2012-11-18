@@ -7,7 +7,7 @@ var ChatPluginDisplayMessage = (function (jQuery, Listener, Event, Handlebars) {
                 '<strong class="user-name">{{displayName}}</strong> ' +
                 '<span class="message">{{{message}}}</span>' +
                 '</p>'),
-            inbox: '<div class="span12" id="inbox"></div>'
+            inbox: '<div class="span12 well" id="inbox"></div>'
         },
         methods: {
             displayInbox: function (inbox) {
