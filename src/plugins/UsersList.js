@@ -7,7 +7,7 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
                 $('#inbox').before(box);
             },
             prepareInbox: function ($inbox) {
-                $inbox.removeClass('span12').addClass('span9');
+                $inbox.removeClass('span12').addClass('span10');
             }
         },
         template: {
@@ -17,7 +17,7 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
                     '<small>{{title}}</small>' +
                     '<div class="btn-group user-buttonbar" />' +
                 '</li>'),
-            box: Handlebars.compile('<ul class="users-list span3 nav nav-collapse well pull-right" />'),
+            box: Handlebars.compile('<ul class="users-list span2 nav nav-collapse well pull-right" />'),
             button: Handlebars.compile('<span class="btn btn-mini {{className}}" {{{attrs}}}>' +
                 '{{label}}' +
                 '{{#if options}}' +
