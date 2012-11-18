@@ -1,49 +1,77 @@
-var ChatPluginYoutubize = (function ($, Listener) {
+var ChatPluginYoutubize = (function ($, Listener, Handlebars, Event) {
     "use strict";
-    // single frame for all instances
-    var frame;
+    var defaults = {
+            button: {
+                label: 'Youtube',
+                className: 'button-youtube',
+                attrs: 'data-toggle="dropdown"',
+                options: {
+                    className: 'youtube-player',
+                    alternatives: [
+                        {label: '<iframe width=\'360px\' height=\'315px\' frameborder=\'0\' allowfullscreen></iframe>', value: ''}
+                    ]
+                }
+            },
+            methods: {
+                getFrame: function (node) {
+                    var frame = node.find("iframe"),
+                        a = frame.closest('a');
+                    frame.appendTo(frame.closest("li"));
+                    a.remove();
+                    return frame;
+                },
 
-    return function (label) {
+                showPlayer: function (node) {
+                    node.find(".btn").dropdown('toggle');
+                }
+            }
+        },
+        
+        pattern  = new RegExp(
+            "http(s)?://www\\.youtube\\.com/watch\\?v=([a-zA-Z0-9\\-_]+)[a-zA-Z0-9$_.+!*(),;/?:@#&~=%-]*",
+            "g"
+        ),
+        replacement = 'http$1://www.youtube.com/embed/$2',
+        tag = '$0<span <a href="http$3://$4$5$6" target="_blank">$2</a>';
+
+    return function (params) {
         Listener.apply(this, arguments);
 
-        var pattern  = new RegExp(
-                "http(s)?://www\\.youtube\\.com/watch\\?v=([a-zA-Z0-9\\-_]+)[a-zA-Z0-9$_.+!*(),;/?:@#&~=%-]*",
-                "g"
-            ),
-            replacement = 'http$1://www.youtube.com/embed/$2',
-            tag = '$0<span <a href="http$3://$4$5$6" target="_blank">$2</a>',
+        var self = this,
+            $frame,
+            $button,
+            options = $.extend(true, {}, defaults, params),
+            
             youtubize = function (event, node) {
-                if (frame === void 0) {
-                    frame = $('<iframe width="560px" height="315px" frameborder="0" allowfullscreen></iframe>');
-                    frame.dialog({
-                        width: 355,
-                        height: 340,
-                        autoOpen: false,
-                        title: label || "YouTube player"
-                    });
-                }
-                node.find("a").each(function () {
-                    if (this.href.indexOf('www.youtube.com') === -1) {
-                        return;
-                    }
-                    $(this).bind("click", function () {
-                        frame.attr("src", this.href.replace(pattern, replacement)).dialog("open");
-                        return false;
-                    });
+                node.find("a").filter("[href*='www.youtube.com']").addClass("youtube-link");
+                return node;
+            },
+
+            init = function (event) {
+                // add button and prepare player frame
+                $button = self.dispatcher.notifyUntil(
+                    new Event(
+                        self,
+                        "buttonbar.button.attach",
+                        options.button
+                    )
+                ).getReturnValue();
+                $frame = options.methods.getFrame($button);
+                
+                // handle click event
+                $('body').on("click", ".youtube-link", function (e) {
+                    $frame.attr("src", e.target.href.replace(pattern, replacement));
+                    options.methods.showPlayer($button);
+                    return false;
                 });
-                return node;
             };
-        // missing jQuery dialog
-        if ($.fn.dialog === void 0) {
-            youtubize = function (event, node) {
-                return node;
-            };
-        }
+            
         this.mapping = function () {
             return {
-                "display_message.node.filter": [youtubize, 50]
+                "display_message.node.filter": [youtubize, 50],
+                "chat.init": init
             };
         };
 
     };
-}(jQuery, Listener));
+}(jQuery, Listener, Handlebars, Event));
