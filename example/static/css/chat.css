@@ -46,12 +46,35 @@ body {
     padding-top: 0 !important;
     padding-bottom: 0 !important;
 }
-    .users-list li:first-child {
+    .users-list > li {
+        position: relative;
         margin-top: 19px;
     }
-    .users-list li:last-child {
+    .users-list > li:first-child {
+    }
+    .users-list > li:last-child {
         margin-bottom: 19px;
     }
+        .users-list .chat-user .user-avatar {
+            height: 2.4em;
+            max-width: 2.5em;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .users-list .chat-user .user-nick,
+        .users-list .chat-user .user-title,
+        .users-list .chat-user .user-ip {
+            display: block;
+        }
+        .users-list .chat-user .user-nick {
+            margin-left: 2.8em;
+        }
+        .users-list .chat-user .user-title {
+            margin-left: 3.2em;
+        }
+        .users-list .chat-user .user-ip {
+        }
 
 /* chat messages */
 .me strong, .me em, .me span {
