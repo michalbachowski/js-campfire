@@ -12,9 +12,9 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
         },
         template: {
             user: Handlebars.compile('<li class="row-fluid chat-user" data-nick="{{nick}}">' +
-                    '<img src="{{avatar}}" />' +
-                    '<strong>{{nick}}</strong>' +
-                    '<small>{{title}}</small>' +
+                    '<img src="{{avatar}}" class="user-avatar" />' +
+                    '<strong class="user-nick">{{nick}}</strong>' +
+                    '<small class="user-title">{{title}}</small>' +
                     '<div class="btn-group user-buttonbar" />' +
                 '</li>'),
             box: Handlebars.compile('<ul class="users-list span2 nav nav-collapse well pull-right" />'),
