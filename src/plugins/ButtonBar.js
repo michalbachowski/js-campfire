@@ -3,8 +3,8 @@ var ChatPluginButtonBar = (function ($, Listener, Handlebars) {
 
     var defaults = {
         template: {
-            bar: '<div class="btn-group buttonbar span4" />',
-            button: Handlebars.compile('<span class="btn {{className}}" {{{attrs}}}>' +
+            bar: '<div class="buttonbar span4" />',
+            button: Handlebars.compile('<span class="btn-group"><span class="btn {{className}}" {{{attrs}}}>' +
                 '{{label}}' +
                 '{{#if options}}' +
                     ' <i class="caret" />' +
@@ -13,10 +13,10 @@ var ChatPluginButtonBar = (function ($, Listener, Handlebars) {
                 '{{#if options}}' +
                     '<ul class="dropdown-menu {{options.className}}">' +
                     '{{#each options.alternatives}}' +
-                    '<li><a href="#" data-value="{{this.value}}">{{this.label}}</a></li>' +
+                    '<li><a href="#" data-value="{{this.value}}">{{{this.label}}}</a></li>' +
                     '{{/each}}' +
                 '</ul>' +
-                '{{/if}}')
+                '{{/if}}</span>')
         },
         methods: {
             display: function (bar) {
