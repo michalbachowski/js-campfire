@@ -215,7 +215,7 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
                 "users_list.user.get": getUser,
                 "users_list.button.add": addButton,
                 "display_message.inbox.filter": prepareInbox,
-                "chat.init": init
+                "chat.init": [init, 90]
             };
         };
      
