@@ -17,6 +17,7 @@ campfire
     .attach(new ChatPluginDispatcher())
     .attach(new ChatPluginDisplayMessage())
     .attach(new ChatPluginForm())
+    .attach(new ChatPluginLinkedNick({urlPattern: Handlebars.compile('http://jaskiniowcy.heroes.net.pl/mieszkaniec/{{id}}')}))
 //    .attach(new ChatPluginInfoBox(jQuery("#info-box").dialog()))      // requires jQuery.dialog as input argument
     .attach(new ChatPluginMe()) 
     .attach(new ChatPluginMessageTime())
