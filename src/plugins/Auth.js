@@ -96,7 +96,11 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
                     $userInfo.remove();
                     $userInfo = void 0;
                 }
-                $userInfo = $(options.template.userInfo($.extend(true, {}, options.options.userInfo, user)));
+                var info = $.extend(true, {}, options.options.userInfo, user);
+                $userInfo = self.dispatcher.filter(
+                    new Event(self, "auth.userinfo.filter", {user: info}),
+                    $(options.template.userInfo(info))
+                ).getReturnValue();
                 return $userInfo;
             },
             notifyLoggedOut = function (message) {
