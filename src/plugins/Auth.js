@@ -45,7 +45,7 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
                 '</form>'),
             userInfo: Handlebars.compile(' ' +
                 '<div class="btn-group pull-right">' +
-                    '<a class="btn btn-warning button-username" href="#">' +
+                    '<a class="btn btn-warning button-username" href="#" data-nick="{{name}}">' +
                         '<i class="icon icon-user"></i>' +
                         '{{name}}' +
                     '</a>' +
