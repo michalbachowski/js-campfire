@@ -6,6 +6,7 @@ var ChatPluginSeparateDirectMessages = (function (jQuery, Listener, Event, Handl
                 '{{#each tabs}}' +
                     '<li {{#if this.className}}class="{{this.className}}"{{/if}}>' +
                         '<a href="#{{this.target}}" data-toggle="tab">{{this.label}}</a>' +
+                        '<small class="badge badge-warning hidden">{{msgIndicator}}</small>' +
                     '</li>' +
                 '{{/each}}' +
                 '</ul>'),
@@ -26,11 +27,15 @@ var ChatPluginSeparateDirectMessages = (function (jQuery, Listener, Event, Handl
                     return box.removeClass(box.attr("class")).addClass("tab-pane well");
                 },
 
-                displayPrivInbox: function (box) {
+                displayPrivInbox: function (box, tabs) {
                     jQuery("#inbox")
                         .addClass("active")
                         .wrap(jQuery('<div class="tabbable"><div class="tab-content row-fluid"></div></div>').addClass(classes))
                         .after(box);
+                },
+
+                notifyPriv: function (box, tabs, msgs) {
+                    tabs.find("a[href*=" + box.attr("id") + "]").next().removeClass("hidden").text(msgs);
                 }
             };
         }()),
@@ -38,6 +43,7 @@ var ChatPluginSeparateDirectMessages = (function (jQuery, Listener, Event, Handl
         options: {
             tabs: {
                 id: "tabs",
+                msgIndicator: '!!',
                 tabs: [
                     {label: 'Inbox', target: 'inbox', className: 'active'},
                     {label: 'Priv', target: 'priv'}
@@ -53,15 +59,31 @@ var ChatPluginSeparateDirectMessages = (function (jQuery, Listener, Event, Handl
             options = jQuery.extend(true, {}, defaults, params),
             $privInbox,
             $tabs,
+            msgs = {},
             filterInbox = function (event, inbox) {
                 return options.methods.prepareInbox(inbox);
             },
             chooseInbox = function (event, inbox) {
-                var data = event.parameter('message');
-                if (data.hasOwnProperty('to') && data.to.length > 0) {
-                    return $privInbox;
+                var data = event.parameter('message'),
+                    $box,
+                    id;
+                // return inbox for ordinal message
+                if (!data.hasOwnProperty('to') || data.to.length === 0) {
+                    $box = inbox;
+                } else {
+                    $box = $privInbox;
                 }
-                return inbox;
+                id = $box.attr("id");
+                // notify about new priv
+                if ($box.is(":hidden")) {
+                    if (!msgs.hasOwnProperty(id)) {
+                        msgs[id] = 0;
+                    }
+                    msgs[id] = msgs[id] + 1;
+                    options.methods.notifyPriv($box, $tabs, msgs[id]);
+                }
+                // return $privInbox for private message
+                return $box;
             },
             init = function (event) {
                 // create priv inbox
@@ -77,6 +99,11 @@ var ChatPluginSeparateDirectMessages = (function (jQuery, Listener, Event, Handl
                     jQuery(options.template.tabs(options.options.tabs))
                 ).getReturnValue();
                 options.methods.displayTabs($tabs, $privInbox);
+                // hide badge
+                $tabs.find('a[data-toggle="tab"]').on("shown", function (e) {
+                    msgs[e.target.href.split('#')[1]] = 0;
+                    jQuery(e.target).next().filter(".badge").addClass("hidden");
+                });
             };
 
         this.mapping = function () {
