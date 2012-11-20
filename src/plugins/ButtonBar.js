@@ -6,8 +6,11 @@ var ChatPluginButtonBar = (function ($, Listener, Handlebars) {
             bar: '<div class="buttonbar span4" />',
             button: Handlebars.compile('<span class="btn-group"><span class="btn {{className}}" {{{attrs}}}>' +
                 '{{label}}' +
-                '{{#if options}}' +
-                    ' <i class="caret" />' +
+                '{{#if split}} ' +
+                '{{else}}' +
+                    '{{#if options}}' +
+                        ' <i class="caret" />' +
+                    '{{/if}}' +
                 '{{/if}}' +
                 '</span>' +
                 '{{#if split}}' +
