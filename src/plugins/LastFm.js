@@ -82,6 +82,7 @@ var ChatPluginLastFm = (function ($, Listener, Event, Handlebars) {
             },
             scrobble = function () {
                 if (!user) {
+                    $dialog.modal('show');
                     return;
                 }
                 $.get(options.template.lastFmUrl({user: user, api: options.apiKey})).success(notify);
