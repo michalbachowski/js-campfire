@@ -8,6 +8,9 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
             },
             prepareInbox: function ($inbox) {
                 $inbox.removeClass('span12').addClass('span10');
+            },
+            prepareTabs: function ($tabs) {
+                $tabs.removeClass('span12').addClass('span10');
             }
         },
         template: {
@@ -199,10 +202,15 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
                 options.methods.insert($box);
             },
 
-            // prepareInbox to work with users list
+            // prepare inbox to work with users list
             prepareInbox = function (event, $inbox) {
                 options.methods.prepareInbox($inbox);
                 return $inbox;
+            },
+            // prepare tabs to work with users list
+            prepareTabs = function (event, $tabs) {
+                options.methods.prepareTabs($tabs);
+                return $tabs;
             };
 
         // start cleaner loop
@@ -215,6 +223,7 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
                 "users_list.user.get": getUser,
                 "users_list.button.add": addButton,
                 "display_message.inbox.filter": prepareInbox,
+                "separate_direct_messages.tabs.filter": prepareTabs,
                 "chat.init": [init, 90]
             };
         };
