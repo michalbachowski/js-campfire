@@ -98,8 +98,11 @@ body {
         .users-list .chat-user .user-ip {
         }
 
-/* inbox */
-#inbox {
+/* inbox + tabbable inbox */
+.nav {
+    margin-bottom: 0;
+}
+#inbox, .tabbable[class*="span"] {
     margin-left: 0;
 }
 /* chat messages */
