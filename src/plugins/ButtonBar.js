@@ -10,10 +10,15 @@ var ChatPluginButtonBar = (function ($, Listener, Handlebars) {
                     ' <i class="caret" />' +
                 '{{/if}}' +
                 '</span>' +
+                '{{#if split}}' +
+                '<span class="btn dropdown-toggle" data-toggle="dropdown">' +
+                    ' <i class="caret" />' +
+                '</span>' +
+                '{{/if}}' +
                 '{{#if options}}' +
                     '<ul class="dropdown-menu {{options.className}}">' +
                     '{{#each options.alternatives}}' +
-                    '<li><a href="#" data-value="{{this.value}}">{{{this.label}}}</a></li>' +
+                    '<li><a href="{{#if this.href}}{{this.href}}{{else}}#{{/if}}" data-value="{{this.value}}" {{#if this.attrs}}{{{this.attrs}}}{{/if}}>{{{this.label}}}</a></li>' +
                     '{{/each}}' +
                 '</ul>' +
                 '{{/if}}</span>')
@@ -27,6 +32,7 @@ var ChatPluginButtonBar = (function ($, Listener, Handlebars) {
             attrs: {
                 className: 'unknown',
                 attrs: '',
+                split: false,
                 label: 'click',
                 options: void 0
             }
