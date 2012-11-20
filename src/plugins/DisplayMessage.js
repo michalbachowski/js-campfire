@@ -58,7 +58,7 @@ var ChatPluginDisplayMessage = (function (jQuery, Listener, Event, Handlebars) {
 
                 // HOOK: prepare inbox (it is possible to append message to other container)
                 inbox = self.dispatcher.filter(
-                    new Event(self, "display_message.index.filter", {event: event, message: message, node: node}),
+                    new Event(self, "display_message.inbox.pick", {event: event, message: message, node: node}),
                     $inbox
                 ).getReturnValue();
 
