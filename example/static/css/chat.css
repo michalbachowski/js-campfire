@@ -49,6 +49,10 @@ body {
     #chat-form input[type=text] {
         width: 55%;
     }
+/* button bar */
+.youtube-player {
+    margin-left: -180px;
+}
 
 /* users list */
 .users-list {
