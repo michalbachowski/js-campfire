@@ -85,7 +85,7 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
             // displays given node
             displayNode = function (node) {
                 // find place where to put new node
-                var nick = node.get(0).dataset.nick,
+                var nick = node.hide().get(0).dataset.nick,
                     destination = $box
                         .children()
                         .filter(function () {
