@@ -1,4 +1,4 @@
-var ChatPluginNap = (function (jQuery, Listener, Event, setInterval, clearInterval, Handlebars) {
+var ChatPluginNap = (function (jQuery, PluginUtility, Event, setInterval, clearInterval, Handlebars) {
     "use strict";
     var defaults = {
         button: {
@@ -9,7 +9,7 @@ var ChatPluginNap = (function (jQuery, Listener, Event, setInterval, clearInterv
             options: {
                 className: 'nap-options',
                 alternatives: [
-                    {label: '<i class="icon icon-remove"></i> Hide nap messages', value: 'hide-nap-messages'}
+                    {label: '<i class="icon"></i> Hide nap messages', value: 'hide-nap-messages'}
                 ]
             }
         },
@@ -17,8 +17,8 @@ var ChatPluginNap = (function (jQuery, Listener, Event, setInterval, clearInterv
         labelSleep: "take a nap",
         labelWakeUp: "wake up",
         methods: {
-            notifyStateChange: function (button, clickedNode) {
-                return clickedNode.find(".icon").toggleClass('icon-remove').toggleClass('icon-ok');
+            notifyStateChange: function (button, event) {
+                return button.find("a .icon").toggleClass('icon-ok');
             },
             getNapToggler: function (button) {
                 return button.find('.button-nap');
@@ -28,7 +28,7 @@ var ChatPluginNap = (function (jQuery, Listener, Event, setInterval, clearInterv
     };
 
     return function (params) {
-        Listener.apply(this, arguments);
+        PluginUtility.apply(this, arguments);
 
         var options = jQuery.extend(true, {}, defaults, params),
             self = this,
@@ -67,7 +67,8 @@ var ChatPluginNap = (function (jQuery, Listener, Event, setInterval, clearInterv
 
             changeState = function (e) {
                 hideNap = !hideNap;
-                options.methods.notifyStateChange($button, jQuery(e.target));
+                self.config.write('nap.hide', hideNap);
+                options.methods.notifyStateChange($button, e);
                 return false;
             },
 
@@ -80,6 +81,11 @@ var ChatPluginNap = (function (jQuery, Listener, Event, setInterval, clearInterv
                         jQuery.extend(true, {}, options.button, {label: options.labelSleep})
                     )
                 ).getReturnValue();
+                // read config
+                var hideNapTmp = self.config.read('nap.hide');
+                if (hideNapTmp !== hideNap && hideNapTmp !== void 0) {
+                    changeState();
+                }
                 options.methods.getNapToggler($button).toggle(sleep, wakeUp);
                 // handle clicks
                 jQuery("body").on("click", options.clickEventSelector, changeState);
@@ -104,6 +110,5 @@ var ChatPluginNap = (function (jQuery, Listener, Event, setInterval, clearInterv
                 "chat.init": init
             };
         };
-
     };
-}(jQuery, Listener, Event, setInterval, clearInterval, Handlebars));
+}(jQuery, PluginUtility, Event, setInterval, clearInterval, Handlebars, PluginUtility));
