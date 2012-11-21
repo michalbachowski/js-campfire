@@ -19,10 +19,10 @@ var ChatPluginConfiguration = (function (Listener, $) {
         var self = this,
             options = $.extend(true, {}, defaults, params),
             
-            set = function (event, node) {
+            write = function (event, node) {
                 return options.methods.write(event.parameter('key'), event.parameter('value'), event);
             },
-            get = function (event) {
+            read = function (event) {
                 var val = options.methods.read(event.parameter('key'), event);
                 if (val === void 0) {
                     return false;
@@ -33,8 +33,8 @@ var ChatPluginConfiguration = (function (Listener, $) {
 
         this.mapping = function () {
             return {
-                "configuration.set": set,
-                "configuration.get": get
+                "configuration.write": write,
+                "configuration.read": read
             };
         };
     };
