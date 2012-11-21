@@ -102,4 +102,39 @@ var ChatFactory = function ($, Event, EventDispatcher) {
             return self;
         };
     },
-    Chat = ChatFactory(jQuery, Event, EventDispatcher);
+    Chat = ChatFactory(jQuery, Event, EventDispatcher),
+    PluginUtility = (function (Listener, Event) {
+        "use strict";
+        return function () {
+            Listener.apply(this, arguments);
+
+            var self = this;
+
+            self.config = {
+                write: function (key, value) {
+                    return self.dispatcher.notifyUntil(
+                        new Event(
+                            self,
+                            "configuration.write",
+                            {
+                                key: key,
+                                value: value
+                            }
+                        )
+                    ).getReturnValue();
+                },
+
+                read: function (key) {
+                    return self.dispatcher.notifyUntil(
+                        new Event(
+                            self,
+                            "configuration.read",
+                            {
+                                key: key
+                            }
+                        )
+                    ).getReturnValue();
+                }
+            };
+        };
+    }(Listener, Event));
