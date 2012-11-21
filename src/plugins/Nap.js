@@ -18,7 +18,7 @@ var ChatPluginNap = (function (jQuery, PluginUtility, Event, setInterval, clearI
         labelWakeUp: "wake up",
         methods: {
             notifyStateChange: function (button, event) {
-                return button.find("a .icon").toggleClass('icon-ok');
+                return button.find(".nap-options a .icon").toggleClass('icon-ok');
             },
             getNapToggler: function (button) {
                 return button.find('.button-nap');
