@@ -1,6 +1,6 @@
 var ChatPluginMe = function () {
     "use strict";
-    Listener.apply( this, arguments );
+    Listener.apply(this, arguments);
 
     var filter = function (event, node) {
         if (event.parameter("message").me) {
