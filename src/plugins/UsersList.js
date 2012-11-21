@@ -1,7 +1,7 @@
 var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval) {
     "use strict";
     var defaults = {
-        refresh: 5,
+        refresh: 5 * 60, // seconds
         methods: {
             insert: function (box) {
                 $('#inbox').before(box);
@@ -51,7 +51,7 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
         var self  = this,
             users = {},
             options = $.extend(true, {}, defaults, params),
-            cleaningTimeout = options.refresh * 60,
+            cleaningTimeout = options.refresh,
             $box,
             userTemplate = options.template.user,
 
