@@ -32,7 +32,7 @@ var ChatPluginButtonBar = (function ($, Listener, Handlebars) {
         },
         methods: {
             display: function (bar) {
-                $("#chat-form").append(bar);
+                $("#chat-form").append(bar).tooltip({selector: "[rel=tooltip]"});
             }
         },
         defaults: {
