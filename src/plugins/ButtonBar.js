@@ -4,27 +4,31 @@ var ChatPluginButtonBar = (function ($, Listener, Handlebars) {
     var defaults = {
         template: {
             bar: '<div class="buttonbar span4" />',
-            button: Handlebars.compile('<span class="btn-group"><span class="btn {{className}}" {{{attrs}}}>' +
-                '{{label}}' +
-                '{{#if split}} ' +
-                '{{else}}' +
-                    '{{#if options}}' +
-                        ' <i class="caret" />' +
+            button: Handlebars.compile('<span class="btn-group">' +
+                '<a href="{{href}}" class="btn {{className}}" {{{attrs}}}>' +
+                    '{{label}}' +
+                    '{{#if split}} ' +
+                    '{{else}}' +
+                        '{{#if options}}' +
+                            ' <i class="caret" />' +
+                        '{{/if}}' +
                     '{{/if}}' +
-                '{{/if}}' +
-                '</span>' +
+                '</a>' +
                 '{{#if split}}' +
-                '<span class="btn dropdown-toggle" data-toggle="dropdown">' +
-                    ' <i class="caret" />' +
-                '</span>' +
+                    '<span class="btn dropdown-toggle" data-toggle="dropdown">' +
+                        ' <i class="caret" />' +
+                    '</span>' +
                 '{{/if}}' +
                 '{{#if options}}' +
                     '<ul class="dropdown-menu {{options.className}}">' +
-                    '{{#each options.alternatives}}' +
-                    '<li><a href="{{#if this.href}}{{this.href}}{{else}}#{{/if}}" data-value="{{this.value}}" {{#if this.attrs}}{{{this.attrs}}}{{/if}}>{{{this.label}}}</a></li>' +
-                    '{{/each}}' +
-                '</ul>' +
-                '{{/if}}</span>')
+                        '{{#each options.alternatives}}' +
+                            '<li>' +
+                                '<a href="{{#if this.href}}{{this.href}}{{else}}#{{/if}}" data-value="{{this.value}}" {{#if this.attrs}}{{{this.attrs}}}{{/if}}>{{{this.label}}}</a>' +
+                            '</li>' +
+                        '{{/each}}' +
+                    '</ul>' +
+                '{{/if}}' +
+                '</span>')
         },
         methods: {
             display: function (bar) {
@@ -35,6 +39,7 @@ var ChatPluginButtonBar = (function ($, Listener, Handlebars) {
             attrs: {
                 className: 'unknown',
                 attrs: '',
+                href: '#',
                 split: false,
                 label: 'click',
                 options: void 0
