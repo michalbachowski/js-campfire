@@ -12,6 +12,7 @@ campfire
     .attach(new ChatPluginBan())
     .attach(new ChatPluginButtonBar())
     .attach(new ChatPluginColor())
+    .attach(new ChatPluginConfiguration())
     .attach(new ChatPluginDice())
     .attach(new ChatPluginDirect())
     .attach(new ChatPluginDispatcher())
