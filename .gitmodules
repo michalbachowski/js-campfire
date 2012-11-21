@@ -16,3 +16,6 @@
 [submodule "vendors/bootstrap"]
 	path = vendors/bootstrap
 	url = git://github.com/twitter/bootstrap.git
+[submodule "vendors/jstorage"]
+	path = vendors/jstorage
+	url = git://github.com/andris9/jStorage.git
