@@ -1,4 +1,4 @@
-var ChatPluginLastFm = (function ($, Listener, Event, Handlebars) {
+var ChatPluginLastFm = (function ($, PluginUtility, Event, Handlebars) {
     "use strict";
 
     var defaults = {
@@ -26,7 +26,7 @@ var ChatPluginLastFm = (function ($, Listener, Event, Handlebars) {
                 '       <div class="text control-group">' +
                 '           <label class="control-label">{{label}}</label>' +
                 '           <div class="controls">' +
-                '               <input type="text" placeholder="{{placeholder}}">' +
+                '               <input type="text" placeholder="{{placeholder}}" value="{{user}}" />' +
                 '           </div>' +
                 '       </div>' +
                 '   </div>' +
@@ -47,14 +47,15 @@ var ChatPluginLastFm = (function ($, Listener, Event, Handlebars) {
                 label: 'Your LastFm username',
                 placeholder: 'Type yout LastFm username',
                 close: 'Close',
-                submit: 'Save'
+                submit: 'Save',
+                user: ''
             }
         },
         apiKey: ''
     };
 
     return function (params) {
-        Listener.apply(this, arguments);
+        PluginUtility.apply(this, arguments);
 
         var self = this,
             options = $.extend(true, {}, defaults, params),
@@ -96,12 +97,17 @@ var ChatPluginLastFm = (function ($, Listener, Event, Handlebars) {
                         options.button
                     )
                 );
+                // read configuration
+                user = self.config.read('lastfm.username');
                 // append modal
-                $dialog = $(options.template.dialog(options.options.dialog)).on("submit", function () {
-                    user = options.methods.fetchNickFromForm(this);
-                    $dialog.modal("hide");
-                    return false;
-                });
+                $dialog = $(options.template.dialog($.extend(true, {}, options.options.dialog, {user: user})))
+                    .on("submit", function () {
+                        user = options.methods.fetchNickFromForm(this);
+                        // save configuration
+                        self.config.write('lastfm.username', user);
+                        $dialog.modal("hide");
+                        return false;
+                    });
                 $("body").append($dialog);
                 // handle clicks
                 $("body").on("click", "." + options.button.className, scrobble);
@@ -113,4 +119,4 @@ var ChatPluginLastFm = (function ($, Listener, Event, Handlebars) {
             };
         };
     };
-}(jQuery, Listener, Event, Handlebars));
+}(jQuery, PluginUtility, Event, Handlebars));
