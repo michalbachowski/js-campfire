@@ -100,7 +100,7 @@ var ChatPluginNap = (function (jQuery, Listener, Event, setInterval, clearInterv
 
         this.mapping = function () {
             return {
-                "dispatcher.message.display": [filter, 300],
+                "dispatcher.message.display": [filter, 500],
                 "chat.init": init
             };
         };
