@@ -2,9 +2,9 @@ var ChatPluginNap = (function (jQuery, PluginUtility, Event, setInterval, clearI
     "use strict";
     var defaults = {
         button: {
-            label: 'click',
+            label: '<i class="icon" />',
             className: 'button-nap',
-            attrs: 'data-toggle="button"',
+            attrs: 'data-toggle="button" data-placement="bottom" rel="tooltip" title="Take nap"',
             split: true,
             options: {
                 className: 'nap-options',
@@ -14,15 +14,34 @@ var ChatPluginNap = (function (jQuery, PluginUtility, Event, setInterval, clearI
             }
         },
         messageInterval: 4 * 60,    // seconds
-        labelSleep: "take a nap",
-        labelWakeUp: "wake up",
         methods: {
             notifyStateChange: function (button, event) {
                 return button.find(".nap-options a .icon").toggleClass('icon-ok');
             },
+            
             getNapToggler: function (button) {
                 return button.find('.button-nap');
-            }
+            },
+
+            changeState: (function () {
+                var states = {
+                    sleep: {
+                        icon: "icon-eye-close",
+                        title: 'Wake up'
+                    },
+                    wakeup: {
+                        icon: "icon-eye-open",
+                        title: 'Sleep'
+                    }
+                };
+                return function (state, node) {
+                    node
+                        .attr("title", states[state].title)
+                        .find(".icon")
+                        .removeClass("icon-eye-open icon-eye-closed")
+                        .addClass(states[state].icon);
+                };
+            }())
         },
         clickEventSelector: '.nap-options a'
     };
@@ -53,7 +72,7 @@ var ChatPluginNap = (function (jQuery, PluginUtility, Event, setInterval, clearI
                 if (!interval) {
                     interval = setInterval(send, intervalTime);
                 }
-                jQuery(this).text(options.labelWakeUp);
+                options.methods.changeState('sleep', $(this));
                 return true;
             },
             wakeUp = function () {
@@ -61,7 +80,7 @@ var ChatPluginNap = (function (jQuery, PluginUtility, Event, setInterval, clearI
                     clearInterval(interval);
                     interval = null;
                 }
-                jQuery(this).text(options.labelSleep);
+                options.methods.changeState('wakeup', $(this));
                 return true;
             },
 
@@ -82,11 +101,14 @@ var ChatPluginNap = (function (jQuery, PluginUtility, Event, setInterval, clearI
                     )
                 ).getReturnValue();
                 // read config
-                var hideNapTmp = self.config.read('nap.hide');
+                var hideNapTmp = self.config.read('nap.hide'),
+                    toggler;
                 if (hideNapTmp !== hideNap && hideNapTmp !== void 0) {
                     changeState();
                 }
-                options.methods.getNapToggler($button).toggle(sleep, wakeUp);
+                toggler = options.methods.getNapToggler($button).toggle(sleep, wakeUp);
+                // toggle first state
+                wakeUp.apply(toggler);
                 // handle clicks
                 jQuery("body").on("click", options.clickEventSelector, changeState);
             },
