@@ -111,4 +111,4 @@ var ChatPluginNap = (function (jQuery, PluginUtility, Event, setInterval, clearI
             };
         };
     };
-}(jQuery, PluginUtility, Event, setInterval, clearInterval, Handlebars, PluginUtility));
+}(jQuery, PluginUtility, Event, setInterval, clearInterval, Handlebars));
