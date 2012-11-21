@@ -2,7 +2,7 @@ var ChatPluginIgnore = (function ($, PluginUtility, Event, Handlebars) {
     "use strict";
     var defaults = {
         button: {
-            label: '<i class="icon icon-trash" />',
+            label: '<i class="icon icon-filter" />',
             className: 'button-ignore',
             attrs: 'data-toggle="modal" rel="tooltip" data-placement="bottom" title="Ignore"',
             href: '#ignore-config',
