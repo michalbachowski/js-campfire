@@ -116,7 +116,7 @@ var ChatPluginLastFm = (function ($, PluginUtility, Event, Handlebars) {
         
         this.mapping = function () {
             return {
-                "chat.init": init // wgrywamy do obiektu Chat funkcje
+                "chat.init": [init, 800] // wgrywamy do obiektu Chat funkcje
             };
         };
     };

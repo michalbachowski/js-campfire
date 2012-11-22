@@ -103,7 +103,7 @@ var ChatPluginIgnore = (function ($, PluginUtility, Event, Handlebars) {
         this.mapping = function () {
             return {
                 "dispatcher.message.display": [filter, 500],
-                "chat.init": init
+                "chat.init": [init, 390]
             };
         };
     };

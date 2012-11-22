@@ -129,7 +129,7 @@ var ChatPluginNap = (function (jQuery, PluginUtility, Event, setInterval, clearI
         this.mapping = function () {
             return {
                 "dispatcher.message.display": [filter, 500],
-                "chat.init": init
+                "chat.init": [init, 790]
             };
         };
     };
