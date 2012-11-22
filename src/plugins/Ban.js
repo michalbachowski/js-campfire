@@ -60,7 +60,7 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars, window) {
                 if (!response.hasOwnProperty('ban')) {
                     return;
                 }
-                // check whether user is allowed to ban others
+                // print information about about ban status
                 self.dispatcher.notifyUntil(
                     new Event(self, "info_box.display", {
                         message: response.ban[0]
