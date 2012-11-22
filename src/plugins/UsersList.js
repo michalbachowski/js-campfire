@@ -4,7 +4,7 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
         refresh: 5 * 60, // seconds
         methods: {
             insert: function (box) {
-                $('#inbox').before(box);
+                box.appendTo("#body");
             },
             prepareInbox: function ($inbox) {
                 $inbox.removeClass('span12').addClass('span10');
@@ -224,7 +224,7 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
                 "users_list.button.add": addButton,
                 "display_message.inbox.filter": prepareInbox,
                 "separate_direct_messages.tabs.filter": prepareTabs,
-                "chat.init": [init, 90]
+                "chat.init": [init, 110]
             };
         };
      
