@@ -112,8 +112,8 @@ var ChatPluginTabbedInbox = (function (jQuery, Listener, Event, Handlebars) {
                 return true;
             },
             // creates inbox
-            createInbox = function (params) {
-                var inbox = filterInbox(null, jQuery(options.template.inbox(
+            createInbox = function (event, params) {
+                var inbox = filterInbox(event, jQuery(options.template.inbox(
                     jQuery.extend(true, {}, options.options.tab, params)
                 )));
                 options.methods.displayInbox(inbox);
