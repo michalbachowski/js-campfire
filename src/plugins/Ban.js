@@ -1,4 +1,4 @@
-var ChatPluginBan = (function (Listener, Event, $, Handlebars, window) {
+var ChatPluginBan = (function (PluginUtility, Event, $, Handlebars, window) {
     "use strict";
     var defaults = {
         button: {
@@ -46,7 +46,7 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars, window) {
         }
     };
     return function (params) {
-        Listener.apply(this, arguments);
+        PluginUtility.apply(this, arguments);
 
         var self = this,
             options = $.extend(true, {}, defaults, params),
@@ -168,4 +168,4 @@ var ChatPluginBan = (function (Listener, Event, $, Handlebars, window) {
         };
 
     };
-}(Listener, Event, $, Handlebars, window));
+}(PluginUtility, Event, $, Handlebars, window));
