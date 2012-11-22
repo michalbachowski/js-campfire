@@ -69,11 +69,16 @@ var ChatPluginDisplayMessage = (function (jQuery, Listener, Event, Handlebars) {
                 return true;
             },
             init = function (event) {
+                // HOOK: filter inbox
                 $inbox = self.dispatcher.filter(
                     new Event(self, "display_message.inbox.filter", {event: event}),
                     jQuery(options.template.inbox)
                 ).getReturnValue();
                 options.methods.displayInbox($inbox);
+                // HOOK: notify inbox has been displayed
+                self.dispatcher.notify(
+                    new Event(self, "display_message.inbox.displayed", {event: event, inbox: $inbox})
+                ).getReturnValue();
             };
 
         this.mapping = function () {
