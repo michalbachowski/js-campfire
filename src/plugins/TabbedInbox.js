@@ -98,7 +98,7 @@ var ChatPluginTabbedInbox = (function (jQuery, Listener, Event, Handlebars) {
             // filters inbox
             filterInbox = function (event, inbox) {
                 // add tab
-                var tab = createTab(jQuery.extend(true, {}, event.parameters(), {target: inbox.attr("id")}));
+                var tab = createTab(jQuery.extend(true, {}, event.parameters(), {target: inbox.attr("id")}, event.parameters()));
                 options.methods.prepareInbox(inbox);
                 if (!hasActiveTab) {
                     hasActiveTab = true;
