@@ -10,7 +10,7 @@ var ChatPluginTabbedInbox = (function (jQuery, Listener, Event, Handlebars) {
                     '<a href="#{{target}}" data-toggle="tab">{{label}}</a>' +
                     '<small class="badge badge-warning hidden"></small>' +
                 '</li>'),
-            inbox: Handlebars.compile('<div id="{{id}}" />')
+            inbox: Handlebars.compile('<div id="{{target}}" />')
         },
 
         methods: (function () {
