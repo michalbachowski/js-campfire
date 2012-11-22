@@ -38,7 +38,7 @@ var ChatPluginNap = (function (jQuery, PluginUtility, Event, setInterval, clearI
                     node
                         .attr("title", states[state].title)
                         .find(".icon")
-                        .removeClass("icon-eye-open icon-eye-closed")
+                        .removeClass("icon-eye-open icon-eye-close")
                         .addClass(states[state].icon);
                 };
             }())
