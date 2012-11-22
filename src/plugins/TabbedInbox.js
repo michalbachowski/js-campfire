@@ -121,10 +121,7 @@ var ChatPluginTabbedInbox = (function (jQuery, Listener, Event, Handlebars) {
             },
             // adds new tab
             addTab = function (event) {
-                event.setReturnValue({
-                    tab: createTab(event.parameters()),
-                    inbox: createInbox(event.parameters())
-                });
+                event.setReturnValue(createInbox(event, event.parameters()));
                 return true;
             },
             // initializes new tabbed inbox
