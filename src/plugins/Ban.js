@@ -61,11 +61,7 @@ var ChatPluginBan = (function (PluginUtility, Event, $, Handlebars, window) {
                     return;
                 }
                 // print information about about ban status
-                self.dispatcher.notifyUntil(
-                    new Event(self, "info_box.display", {
-                        message: response.ban[0]
-                    })
-                );
+                self.alert(response.ban[0]);
             },
 
             banUser = function (nick, seconds) {
