@@ -64,7 +64,12 @@ var ChatPluginLastFm = (function ($, PluginUtility, Event, Handlebars) {
             user,
 
             notify = function (response) {
-                if (response.recenttracks.track[0]['@attr'].nowplaying !== 'true') {
+                try {
+                    if (response.recenttracks.track[0]['@attr'].nowplaying !== 'true') {
+                        return;
+                    }
+                } catch (e) {
+                    self.alert('Error while fetching LastFm status', 'error');
                     return;
                 }
                 self.dispatcher.notifyUntil(
