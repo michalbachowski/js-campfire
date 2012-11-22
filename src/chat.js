@@ -78,15 +78,6 @@ var ChatFactory = function ($, Event, EventDispatcher) {
                 }
                 // HOOK: response processed
                 dispatcher.notify(new Event(self, "chat.response.processed", {response: r}));
-            },
-
-            doInit = function (pooler) {
-                // HOOK: dispatch start
-                dispatcher.notify(new Event(self, "chat.init"));
-
-                // start pooling
-                pooler(callback);
-                return self;
             };
 
         return function (pooler, eventDispatcher) {
