@@ -127,5 +127,15 @@ var ChatFactory = function ($, Event, EventDispatcher) {
                     ).getReturnValue();
                 }
             };
+
+            self.alert = function (content, type) {
+                var data = {
+                    content: content,
+                    type: type || 'warning'
+                };
+                return self.dispatcher.notifyUntil(
+                    new Event(self, "info_box.display", data)
+                );
+            };
         };
     }(Listener, Event));
