@@ -42,8 +42,8 @@ var ChatPluginTabbedInbox = (function (jQuery, Listener, Event, Handlebars) {
                     box.appendTo('.tab-content');
                 },
 
-                notify: function (box, tabs, msgs) {
-                    tabs.find("a[href*=" + box.attr("id") + "]").next().removeClass("hidden").text(msgs);
+                notify: function (inbox, tabBox, msgs) {
+                    tabBox.find("a[href*=" + inbox.attr("id") + "]").next().removeClass("hidden").text(msgs);
                 }
             };
         }()),
@@ -81,6 +81,19 @@ var ChatPluginTabbedInbox = (function (jQuery, Listener, Event, Handlebars) {
                     options.methods.findBadge(jQuery(e.target)).addClass("hidden");
                 });
                 return tabs[data.target];
+            },
+            chooseInbox = function (event, inbox) {
+                if (inbox.is(':visible')) {
+                    return inbox;
+                }
+                var id = inbox.attr("id");
+                // notify about new priv
+                if (!msgs.hasOwnProperty(id)) {
+                    msgs[id] = 0;
+                }
+                msgs[id] = msgs[id] + 1;
+                options.methods.notify(inbox, $tabBox, msgs[id]);
+                return inbox;
             },
             // filters inbox
             filterInbox = function (event, inbox) {
@@ -128,6 +141,7 @@ var ChatPluginTabbedInbox = (function (jQuery, Listener, Event, Handlebars) {
             return {
                 "display_message.inbox.filter": [filterInbox, 100],
                 "display_message.inbox.displayed": moveInbox,
+                "display_message.inbox.pick": [chooseInbox, 300],
                 "tabbed_inbox.tab.add": addTab,
                 "chat.init": [init, 110]
             };
