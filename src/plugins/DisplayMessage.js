@@ -71,7 +71,7 @@ var ChatPluginDisplayMessage = (function (jQuery, Listener, Event, Handlebars) {
             init = function (event) {
                 // HOOK: filter inbox
                 $inbox = self.dispatcher.filter(
-                    new Event(self, "display_message.inbox.filter", {event: event}),
+                    new Event(self, "display_message.inbox.filter", {event: event, label: 'Inbox'}),
                     jQuery(options.template.inbox)
                 ).getReturnValue();
                 options.methods.displayInbox($inbox);
