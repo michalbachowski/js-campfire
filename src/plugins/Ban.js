@@ -11,7 +11,7 @@ var ChatPluginBan = (function (PluginUtility, Event, $, Handlebars, window) {
                     {label: 'a minute', value: 60},
                     {label: '5 minutes', value: 300},
                     {label: '10 minutes', value: 600},
-                    {label: 'quater of and hour', value: 900},
+                    {label: 'quater of an hour', value: 900},
                     {label: 'half an hour', value: 1800},
                     {label: 'an hour', value: 3600},
                     {lbael: '3 hours', value: 10800},
