@@ -126,3 +126,6 @@ body {
     color: #ab0000;
     font-weight: bold;
 }
+.text-highlight {
+    background-color: rgba(171, 0, 0, 0.2);
+}
