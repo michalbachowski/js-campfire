@@ -23,6 +23,7 @@ campfire
     .attach(new ChatPluginLinkedNick({urlPattern: Handlebars.compile('http://jaskiniowcy.heroes.net.pl/mieszkaniec/{{id}}')}))
     .attach(new ChatPluginIgnore())
     .attach(new ChatPluginInfoBox())
+    .attach(new ChatPluginInputHint())
     .attach(new ChatPluginMe()) 
     .attach(new ChatPluginMessageTime())
     .attach(new ChatPluginNap())
