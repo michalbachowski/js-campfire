@@ -43,7 +43,10 @@ var ChatPluginNap = (function (jQuery, PluginUtility, Event, setInterval, clearI
                 };
             }())
         },
-        clickEventSelector: '.nap-options a'
+        clickEventSelector: '.nap-options a',
+        message: {
+            message: '/nap'
+        }
     };
 
     return function (params) {
@@ -56,23 +59,23 @@ var ChatPluginNap = (function (jQuery, PluginUtility, Event, setInterval, clearI
             intervalTime = options.messageInterval * 1000,
             interval,
             send = function () {
-                self.dispatcher.notifyUntil(
-                    new Event(
-                        self,
-                        "send_message.send",
-                        {
-                            message: {
-                                message: "/nap"
-                            }
-                        }
-                    )
-                );
+                var message = self.dispatcher.filter(
+                        new Event(self, "form.message.filter", {}),
+                        jQuery.extend(true, {}, options.message)
+                    ).getReturnValue(),
+                    event = self.dispatcher.notifyUntil(
+                        new Event(
+                            self,
+                            "send_message.send",
+                            {message: message}
+                        )
+                    );
             },
             sleep = function () {
                 if (!interval) {
                     interval = setInterval(send, intervalTime);
                 }
-                options.methods.changeState('sleep', $(this));
+                options.methods.changeState('sleep', jQuery(this));
                 return true;
             },
             wakeUp = function () {
@@ -80,7 +83,7 @@ var ChatPluginNap = (function (jQuery, PluginUtility, Event, setInterval, clearI
                     clearInterval(interval);
                     interval = null;
                 }
-                options.methods.changeState('wakeup', $(this));
+                options.methods.changeState('wakeup', jQuery(this));
                 return true;
             },
 
