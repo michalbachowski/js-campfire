@@ -5,7 +5,7 @@ var ChatPluginLastFm = (function ($, PluginUtility, Event, Handlebars) {
         button: {
             label: '<i class="icon icon-headphones" />',
             className: 'button-lastfm',
-            attrs: 'data-placement="bottom" rel="tooltip" title="LastFm status"',
+            attrs: 'rel="tooltip" title="LastFm status"',
             split: true,
             options: {
                 className: 'lastfm',

@@ -4,7 +4,7 @@ var ChatPluginHighlight = (function ($, PluginUtility, Event, Handlebars) {
         button: {
             label: '<i class="icon icon-star" />',
             className: 'button-highlight',
-            attrs: 'data-toggle="modal" rel="tooltip" data-placement="bottom" title="Highlight"',
+            attrs: 'data-toggle="modal" rel="tooltip" title="Highlight"',
             href: '#highlight-config',
             options: {}
         },

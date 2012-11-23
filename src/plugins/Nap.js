@@ -4,7 +4,7 @@ var ChatPluginNap = (function (jQuery, PluginUtility, Event, setInterval, clearI
         button: {
             label: '<i class="icon" />',
             className: 'button-nap',
-            attrs: 'data-toggle="button" data-placement="bottom" rel="tooltip" title="Take nap"',
+            attrs: 'data-toggle="button" rel="tooltip" title="Take nap"',
             split: true,
             options: {
                 className: 'nap-options',

@@ -4,7 +4,7 @@ var ChatPluginDice = (function ($, Listener, Event) {
         button: {
             label: '<i class="icon icon-repeat" />',
             className: 'button-dice',
-            attrs: 'data-toggle="dropdown" data-placement="bottom" rel="tooltip" title="Roll a dice"',
+            attrs: 'data-toggle="dropdown" rel="tooltip" title="Roll a dice"',
             options: {
                 className: 'dice-dices',
                 alternatives: [2, 3, 4, 6, 8, 10, 12, 20, 100].map(function (v) { return {label: 'k' + v, value: v}; })

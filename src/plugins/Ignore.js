@@ -4,7 +4,7 @@ var ChatPluginIgnore = (function ($, PluginUtility, Event, Handlebars) {
         button: {
             label: '<i class="icon icon-filter" />',
             className: 'button-ignore',
-            attrs: 'data-toggle="modal" rel="tooltip" data-placement="bottom" title="Ignore"',
+            attrs: 'data-toggle="modal" rel="tooltip" title="Ignore"',
             href: '#ignore-config',
             options: {}
         },

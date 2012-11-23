@@ -4,7 +4,7 @@ var ChatPluginYoutubize = (function ($, Listener, Handlebars, Event) {
             button: {
                 label: '<i class="icon icon-film" />',
                 className: 'button-youtube',
-                attrs: 'data-toggle="dropdown" data-placement="bottom" rel="tooltip" title="Youtube"',
+                attrs: 'data-toggle="dropdown" rel="tooltip" title="Youtube"',
                 options: {
                     className: 'youtube-player',
                     alternatives: [
