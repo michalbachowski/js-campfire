@@ -4,7 +4,7 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
         refresh: 5 * 60, // seconds
         methods: {
             insert: function (box) {
-                box.appendTo("#body");
+                box.appendTo("#body").tooltip({selector: '[rel=tooltip]', placement: 'bottom'});
             },
             prepareInbox: function ($inbox) {
                 $inbox.removeClass('span12').addClass('span10');
