@@ -11,6 +11,9 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
             },
             prepareTabs: function ($tabs) {
                 $tabs.removeClass('span12').addClass('span10');
+            },
+            prepareNode: function (node) {
+                return node;
             }
         },
         template: {
@@ -92,7 +95,7 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
                             return this.dataset.nick > nick;
                         })
                         .first();
-
+                node = options.methods.prepareNode(node);
                 // append node
                 if (0 === destination.length) {
                     $box.append(node);
