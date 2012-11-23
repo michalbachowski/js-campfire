@@ -4,8 +4,9 @@ var ChatPluginDirect = (function (Listener, $, Handlebars, Event) {
         inputSelector: '#chat-form input[type=text]',
         userNodeSelector: '.chat-user',
         button: {
-            label: 'Priv',
-            className: 'button-direct'
+            label: '<i class="icon icon-comment" />',
+            className: 'button-direct',
+            attrs: 'rel="tooltip" data-original-title="Private message"'
         }
     };
 
