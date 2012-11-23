@@ -9,7 +9,19 @@ var ChatPluginInputHint = (function (Listener, $, Event) {
         options: {
             typeahead: {
                 source: [],
-                minLength: 2
+                minLength: 1,
+                matcher: function (item) {
+                    if (" " === this.query) {
+                        return false;
+                    }
+                    if ("  " === this.query) {
+                        return false;
+                    }
+                    if ("   " === this.query) {
+                        return false;
+                    }
+                    return ~item.toLowerCase().indexOf(this.query.toLowerCase());
+                }
             }
         }
     };
