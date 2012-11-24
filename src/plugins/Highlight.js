@@ -95,6 +95,9 @@ var ChatPluginHighlight = (function ($, PluginUtility, Event, Handlebars) {
             },
 
             filter = function (event, msg) {
+                if (words.length === 0) {
+                    return msg;
+                }
                 return msg.replace(
                     new RegExp('(' + words.join('|') + ')', 'gim'),
                     options.template.pattern
