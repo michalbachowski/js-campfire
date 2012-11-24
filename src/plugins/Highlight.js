@@ -58,7 +58,7 @@ var ChatPluginHighlight = (function ($, PluginUtility, Event, Handlebars) {
             $dialog,
 
             prepareWords = function (words) {
-                return (words || '').split(',').map($.trim);
+                return (words || '').split(',').map($.trim).filter(function (e) { return e.length > 0; });
             },
 
             writeConfig = function (words) {
