@@ -9,19 +9,7 @@ var ChatPluginInputHint = (function (Listener, $, Event) {
         options: {
             typeahead: {
                 source: [],
-                minLength: 1,
-                matcher: function (item) {
-                    if (" " === this.query) {
-                        return false;
-                    }
-                    if ("  " === this.query) {
-                        return false;
-                    }
-                    if ("   " === this.query) {
-                        return false;
-                    }
-                    return ~item.toLowerCase().indexOf(this.query.toLowerCase());
-                }
+                minLength: 1
             }
         }
     };
@@ -31,6 +19,19 @@ var ChatPluginInputHint = (function (Listener, $, Event) {
 
         var self = this,
             options = $.extend(true, {}, defaults, params),
+            nicks = [],
+            commands = [],
+            
+            // methods returns source list for typeahead
+            source = function (query, process) {
+                if (query[0] === '$') {
+                    return commands;
+                }
+                if (query[0] === '>') {
+                    return nicks;
+                }
+                return [];
+            },
 
             // callback for init method
             callback = function (response) {
@@ -42,7 +43,6 @@ var ChatPluginInputHint = (function (Listener, $, Event) {
                     ),
                     input,
                     i,
-                    source = [],
                     tmp = response.response.console[0],
                     item;
                 if (!form.isProcessed()) {
@@ -50,7 +50,7 @@ var ChatPluginInputHint = (function (Listener, $, Event) {
                 }
                 for (i = 0; i < tmp.length; i = i + 1) {
                     item = tmp[i];
-                    source.push('$' + item.plugin + ' ' + item.method + ' ' + item.args);
+                    commands.push('$' + item.plugin + ' ' + item.method + ' ' + item.args);
                 }
                 options.methods.getInput(form.getReturnValue()).typeahead(
                     $.extend(true, {}, options.options.typeahead, {source: source})
@@ -67,16 +67,17 @@ var ChatPluginInputHint = (function (Listener, $, Event) {
                 );
             },
 
-            // add information that message is being sent as puppet
-            filterMessage = function (event, data) {
-                if (hasPuppet && as_puppet) {
-                    data.as_puppet = 1;
+            addNick = function (event, nick) {
+                var tmp = '>' + nick + ':';
+                if (nicks.indexOf(tmp) === -1) {
+                    nicks.push(tmp);
                 }
-                return data;
+                return nick;
             };
-        
+
         this.mapping = function () {
             return {
+                "users_list.nick.filter": [addNick, 500],
                 "chat.init": init
             };
         };
