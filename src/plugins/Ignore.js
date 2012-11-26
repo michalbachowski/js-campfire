@@ -1,12 +1,18 @@
 var ChatPluginIgnore = (function ($, PluginUtility, Event, Handlebars) {
     "use strict";
     var defaults = {
+        userNodeSelector: '.chat-user',
         button: {
             label: '<i class="icon icon-filter" />',
             className: 'button-ignore',
             attrs: 'data-toggle="modal" rel="tooltip" title="Ignore"',
             href: '#ignore-config',
             options: {}
+        },
+        buttonUser: {
+            label: '<i class="icon icon-filter" />',
+            className: 'button-ignore-add',
+            attrs: 'rel="tooltip" title="Ignore user"'
         },
         template: {
             dialog: Handlebars.compile(' ' +
@@ -43,6 +49,10 @@ var ChatPluginIgnore = (function ($, PluginUtility, Event, Handlebars) {
         methods: {
             getIgnoredUsers: function (form) {
                 return $(form).find('textarea#ignored-users').val();
+            },
+
+            setIgnoredUsers: function (form, users) {
+                return $(form).find('textarea#ignored-users').val(users);
             }
         }
     };
@@ -65,6 +75,12 @@ var ChatPluginIgnore = (function ($, PluginUtility, Event, Handlebars) {
                 return false;
             },
 
+            addIgnored = function (user) {
+                ignored.push(user);
+                writeConfig(ignored);
+                return true;
+            },
+
             init = function () {
                 // attach button
                 $button = self.dispatcher.notifyUntil(
@@ -82,27 +98,47 @@ var ChatPluginIgnore = (function ($, PluginUtility, Event, Handlebars) {
                     ignoredTmp = ignored;
                 }
                 // append modal
-                $dialog = $(options.template.dialog($.extend(true, {}, options.options.dialog, {ignored: ignored.join(',')})))
+                $dialog = $(options.template.dialog(options.options.dialog))
                     .on("submit", function () {
                         ignored = prepareIgnored(options.methods.getIgnoredUsers(this));
                         // save configuration
                         writeConfig(ignored);
                         $dialog.modal("hide");
                         return false;
+                    }).on("show", function () {
+                        options.methods.setIgnoredUsers(this, ignored.join(','));
                     });
                 $("body").append($dialog);
+                
+                // handle clicks on "Ignore" button on users list
+                $("body").on("click", "." + options.buttonUser.className, function (e) {
+                    addIgnored($(e.target).closest(options.userNodeSelector).get(0).dataset.nick);
+                    return false;
+                });
             },
 
+            // filter out ignored messages
             filter = function (event) {
                 var data = event.parameter("message");
                 if (ignored.indexOf(data.from.name) !== -1) {
                     return true;
                 }
+            },
+
+            // append "Ignore" button to each user node on users list
+            filterUser = function (event, node) {
+                self.dispatcher.notifyUntil(
+                    new Event(self, "users_list.button.add",
+                        $.extend(true, options.buttonUser, {nick: node.get(0).dataset.nick}))
+                );
+                return node;
             };
+
 
         this.mapping = function () {
             return {
                 "dispatcher.message.display": [filter, 500],
+                "users_list.node.filter": filterUser,
                 "chat.init": [init, 390]
             };
         };
