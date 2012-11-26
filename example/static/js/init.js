@@ -29,6 +29,7 @@ campfire
     .attach(new ChatPluginMe()) 
     .attach(new ChatPluginMessageTime())
     .attach(new ChatPluginNap())
+    .attach(new ChatPluginPermissions())
     .attach(new ChatPluginPuppet())
     .attach(new ChatPluginPuppetOwners())
     .attach(new ChatPluginSendMessage({url: '/jbapp/chat/ognisko/odpowiedz.json'}))
