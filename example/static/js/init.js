@@ -10,6 +10,7 @@ campfire
         }
     }))
     .attach(new ChatPluginBan())
+    .attach(new ChatPluginBanned())
     .attach(new ChatPluginButtonBar())
     .attach(new ChatPluginColor())
     .attach(new ChatPluginConfiguration())
