@@ -20,6 +20,12 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
                 loginLabel: 'login',
                 logged: false,
                 hasAccount: false
+            },
+            button: {
+                href: '#',
+                attrs: '',
+                className: '',
+                label: 'click'
             }
         },
         template: {
@@ -62,7 +68,10 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
                         '<li><a href="#" class="button-login">{{loginLabel}}</a></li>' +
                         '{{/if}}' +
                     '</ul>' +
-                '</div>')
+                '</div>'),
+            button: Handlebars.compile(
+                '<li><a href="{{href}}" class="{{className}}" {{{attrs}}}>{{{label}}}</a></li>'
+            )
         },
         methods: {
             showDialog: function (dialog) {
@@ -79,6 +88,11 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
 
             selectNick: function (form) {
                 return $(form).find("input[type=text]").val();
+            },
+
+            appendButton: function (button, $userInfo) {
+                console.log($userInfo);
+                $userInfo.find('.dropdown-menu').append(button);
             }
         }
     };
@@ -169,6 +183,16 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
                     });
                 }
                 return $dialog;
+            },
+
+            // attch button
+            attach = function (event) {
+                var button = $(options.template.button(
+                    $.extend(true, {}, options.options.button, event.parameters())
+                ));
+                options.methods.appendButton(button, $userInfo);
+                event.setReturnValue(button);
+                return true;
             };
 
         /**
@@ -221,7 +245,8 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
         // event mapping
         self.mapping = function () {
             return {
-                "chat.init": init
+                "chat.init": init,
+                "auth.button.attach": attach
             };
         };
 
