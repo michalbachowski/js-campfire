@@ -3,7 +3,7 @@ var ChatPluginForm = (function (jQuery, Listener, Event, Handlebars) {
     var defaults = {
         template: {
             form: Handlebars.compile('<form action="{{action}}" method="post" id="chat-form" class="row-fluid form-inline">' +
-                '<fieldset class="input-append span8">' +
+                '<fieldset class="input-append span7">' +
                 '<input type="text" name="message" placeholder="{{placeholder}}" autocomplete="off" />' +
                 '<input type="submit" value="{{label}}" class="btn" />' +
                 '</fieldset>' +

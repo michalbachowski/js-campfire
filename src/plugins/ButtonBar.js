@@ -3,7 +3,7 @@ var ChatPluginButtonBar = (function ($, Listener, Handlebars) {
 
     var defaults = {
         template: {
-            bar: '<div class="buttonbar span4" />',
+            bar: '<div class="buttonbar span5" />',
             button: Handlebars.compile('<span class="btn-group">' +
                 '<a href="{{href}}" class="btn {{className}}" {{{attrs}}}>' +
                     '{{{label}}}' +
