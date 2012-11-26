@@ -30,6 +30,12 @@ var ChatPluginBan = (function (PluginUtility, Event, $, Handlebars, window) {
                 ]
             }
         },
+        buttonBanned: {
+            label: '<i class="icon icon-trash" />',
+            className: 'button-banned',
+            href: "#ban-banned-dialog",
+            attrs: 'data-toggle="modal" rel="tooltip" title="Banned users"'
+        },
         defaultBanDuration: 60,
         clickEventSelctor: '.ban-options a',
         userNodeIndicator: '.chat-user',
@@ -37,11 +43,47 @@ var ChatPluginBan = (function (PluginUtility, Event, $, Handlebars, window) {
         template: {
             caret: ' <i class="caret" />',
             ip: Handlebars.compile('<small class="user-ip muted">{{ip}}</small>'),
-            options: Handlebars.compile('<ul class="dropdown-menu ban-options">{{#each time}}<li><a href="#" data-seconds="{{this.seconds}}">{{this.label}}</a></li>{{/each}}</ul>')
+            options: Handlebars.compile('<ul class="dropdown-menu ban-options">{{#each time}}<li><a href="#" data-seconds="{{this.seconds}}">{{this.label}}</a></li>{{/each}}</ul>'),
+            dialog: Handlebars.compile(' ' +
+                '<div class="modal hide fade" id="ban-banned-dialog" tabindex="-1" role="dialog" aria-hidden="true">' +
+                '   <div class="modal-header">' +
+                '       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>' +
+                '       <h3>{{header}}</h3>' +
+                '   </div>' +
+                '   <div class="modal-body">' +
+                '   </div>' +
+                '   <div class="modal-footer">' +
+                '       <a href="#" class="btn" data-dismiss="modal" aria-hidden="true">{{close}}</a>' +
+                '   </div>' +
+                '</div>'),
+            banned: Handlebars.compile(' ' +
+                '<table class="table table-hover">' +
+                    '<thead><tr><th>{{type}}</th><th>{{param}}</th><th>{{date}}</th></tr></thead>' +
+                    '<tbody>' +
+                    '{{#each users}}' +
+                    '<tr><td>{{this.type}}</td><td>{{this.param}}</td><td>{{this.date}}</td></tr>' +
+                    '{{/each}}' +
+                    '</tbody>' +
+                '</table>')
         },
         methods: {
             ip: function (node, ip) {
                 node.find(".btn-group").first().before(ip);
+            },
+            appendBanned: function (dialog, banned) {
+                dialog.find(".modal-body").find("table").remove().end().append(banned);
+            }
+        },
+        options: {
+            dialog: {
+                header: 'Banned users',
+                close: 'Close'
+            },
+            banned: {
+                param: 'Banned value',
+                type: 'Banned parameter',
+                date: 'Ban end',
+                users: []
             }
         }
     };
@@ -51,6 +93,7 @@ var ChatPluginBan = (function (PluginUtility, Event, $, Handlebars, window) {
         var self = this,
             options = $.extend(true, {}, defaults, params),
             allowBan = false,
+            $dialog,
  
         // handle user ban
             afterBan = function (response) {
@@ -114,6 +157,36 @@ var ChatPluginBan = (function (PluginUtility, Event, $, Handlebars, window) {
                 });
             },
 
+            showBanned = function (response) {
+                options.methods.appendBanned($dialog, options.template.banned(
+                    $.extend(true, {}, options.options.banned, {users: response.response.ban[0]})
+                ));
+            },
+
+            banned = function (response) {
+                // attach button
+                self.dispatcher.notifyUntil(
+                    new Event(
+                        self,
+                        "buttonbar.button.attach",
+                        options.buttonBanned
+                    )
+                ).getReturnValue();
+                // append modal
+                $dialog = $(options.template.dialog(options.options.dialog))
+                    .on("show", function () {
+                        self.dispatcher.notifyUntil(
+                            new Event(self, "send_message.send", {
+                                message: {
+                                    message: "$ban users"
+                                },
+                                success: showBanned
+                            })
+                        );
+                    });
+                $("body").append($dialog);
+            },
+
             init = function () {
                 // check whether user is allowed to ban others
                 self.dispatcher.notifyUntil(
@@ -122,6 +195,15 @@ var ChatPluginBan = (function (PluginUtility, Event, $, Handlebars, window) {
                             message: "$console allowed ban user"
                         },
                         success: success
+                    })
+                );
+                // check whether user is allowed to view banned users
+                self.dispatcher.notifyUntil(
+                    new Event(self, "send_message.send", {
+                        message: {
+                            message: "$console allowed ban users"
+                        },
+                        success: banned
                     })
                 );
             },
