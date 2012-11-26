@@ -78,6 +78,8 @@ var ChatPluginIgnore = (function ($, PluginUtility, Event, Handlebars) {
             addIgnored = function (user) {
                 ignored.push(user);
                 writeConfig(ignored);
+                // print information about about ban status
+                self.alert('User ' + user + ' added to ignore list', 'success');
                 return true;
             },
 
