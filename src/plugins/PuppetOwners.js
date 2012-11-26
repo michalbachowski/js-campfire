@@ -23,7 +23,7 @@ var ChatPluginPuppetOwners = (function (PluginUtility, Event, $, Handlebars) {
             list: Handlebars.compile(' ' +
                 '<table class="table table-hover">' +
                     '<caption>{{header}}</caption>' +
-                    '<thead><tr><th>{{owner}}</th><th>{{name}}</th><th>Avatar</th></tr></thead>' +
+                    '<thead><tr><th>{{owner}}</th><th>{{name}}</th><th>{{avatar}}</th></tr></thead>' +
                     '<tbody>' +
                     '{{#each rows}}' +
                     '<tr><td>{{this.owner}}</td><td>{{this.puppet}}</td><td><img src="{{this.avatar}}" /></td></tr>' +
