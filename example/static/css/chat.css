@@ -129,3 +129,13 @@ body {
 .text-highlight {
     background-color: rgba(171, 0, 0, 0.2);
 }
+
+/* other */
+.color-example {
+    display: block;
+    width: 7em;
+    height: 2em;
+    line-height: 2em;
+    text-align: center;
+    border: 1px solid #000;
+}
