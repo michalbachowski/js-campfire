@@ -91,7 +91,6 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
             },
 
             appendButton: function (button, $userInfo) {
-                console.log($userInfo);
                 $userInfo.find('.dropdown-menu').append(button);
             }
         }
