@@ -101,8 +101,8 @@ var ChatPluginColorUsers = (function (PluginUtility, Event, $, Handlebars) {
 
         this.mapping = function () {
             return {
-                "auth.login": init,
-                "auth.logout": init
+                "auth.login": [init, 530],
+                "auth.logout": [init, 530]
             };
         };
 

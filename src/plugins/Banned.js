@@ -102,8 +102,8 @@ var ChatPluginBanned = (function (PluginUtility, Event, $, Handlebars) {
 
         this.mapping = function () {
             return {
-                "auth.login": init,
-                "auth.logout": init
+                "auth.login": [init, 520],
+                "auth.logout": [init, 520]
             };
         };
 
