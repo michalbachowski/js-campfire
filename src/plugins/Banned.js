@@ -5,7 +5,7 @@ var ChatPluginBanned = (function (PluginUtility, Event, $, Handlebars) {
             label: '<i class="icon icon-trash" /> Banned users',
             className: 'button-banned',
             href: "#ban-banned-dialog",
-            attrs: 'data-toggle="modal" rel="tooltip" title="Banned users"'
+            attrs: 'data-toggle="modal"'
         },
         template: {
             dialog: Handlebars.compile(' ' +
