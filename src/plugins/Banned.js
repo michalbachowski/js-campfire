@@ -2,7 +2,7 @@ var ChatPluginBanned = (function (PluginUtility, Event, $, Handlebars) {
     "use strict";
     var defaults = {
         button: {
-            label: '<i class="icon icon-trash" />',
+            label: '<i class="icon icon-trash" /> Banned users',
             className: 'button-banned',
             href: "#ban-banned-dialog",
             attrs: 'data-toggle="modal" rel="tooltip" title="Banned users"'
@@ -69,7 +69,7 @@ var ChatPluginBanned = (function (PluginUtility, Event, $, Handlebars) {
                 self.dispatcher.notifyUntil(
                     new Event(
                         self,
-                        "buttonbar.button.attach",
+                        "auth.button.attach",
                         options.button
                     )
                 ).getReturnValue();
@@ -88,7 +88,7 @@ var ChatPluginBanned = (function (PluginUtility, Event, $, Handlebars) {
                 $("body").append($dialog);
             },
 
-            init = function () {
+            init = function (event) {
                 // check whether user is allowed to view banned users
                 self.dispatcher.notifyUntil(
                     new Event(self, "send_message.send", {
