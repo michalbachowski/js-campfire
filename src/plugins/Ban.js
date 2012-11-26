@@ -150,7 +150,7 @@ var ChatPluginBan = (function (PluginUtility, Event, $, Handlebars, window) {
                 self.dispatcher.notifyUntil(
                     new Event(self, "users_list.button.add",
                         $.extend(true, options.button, {nick: node.get(0).dataset.nick}))
-                ).getReturnValue().toggle(allowBan);
+                ).getReturnValue().filter(".btn").toggle(allowBan);
 
                 return node;
             };
