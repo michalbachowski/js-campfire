@@ -83,7 +83,7 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
             },
 
             showUserInfo: function (box) {
-                $(".navbar-inner .container-fluid").append(box);
+                $(".navbar-inner .container-fluid").append(box).tooltip({selector: "[rel=tooltip]", placement: 'bottom'});
             },
 
             selectNick: function (form) {
