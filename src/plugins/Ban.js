@@ -58,6 +58,7 @@ var ChatPluginBan = (function (PluginUtility, Event, $, Handlebars, window) {
                 '</div>'),
             banned: Handlebars.compile(' ' +
                 '<table class="table table-hover">' +
+                    '<caption>{{header}}</caption>' +
                     '<thead><tr><th>{{type}}</th><th>{{param}}</th><th>{{date}}</th></tr></thead>' +
                     '<tbody>' +
                     '{{#each users}}' +
@@ -80,6 +81,7 @@ var ChatPluginBan = (function (PluginUtility, Event, $, Handlebars, window) {
                 close: 'Close'
             },
             banned: {
+                header: 'Banned users',
                 param: 'Banned value',
                 type: 'Banned parameter',
                 date: 'Ban end',
