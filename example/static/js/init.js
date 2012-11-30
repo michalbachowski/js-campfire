@@ -1,5 +1,5 @@
 var campfire = new Chat(function (callback) {
-    poller('/chat/poll', callback);
+    poller('/chat/poll', callback, {type: 'GET'});
 });
 
 campfire
