@@ -1,12 +1,12 @@
 var campfire = new Chat(function (callback) {
-    poller('/jbapp/chat/ognisko/rozmowa.json', callback);
+    poller('/chat/poll', callback);
 });
 
 campfire
     .attach(new ChatPluginAuth({
         url: {
-            login: '/jbapp/chat/ognisko/wejscie.json',
-            logout: '/jbapp/chat/ognisko/wyjscie.json'
+            login: '/chat/login',
+            logout: '/chat/logout'
         }
     }))
     .attach(new ChatPluginBan())
@@ -32,7 +32,7 @@ campfire
     .attach(new ChatPluginPermissions())
     .attach(new ChatPluginPuppet())
     .attach(new ChatPluginPuppetOwners())
-    .attach(new ChatPluginSendMessage({url: '/jbapp/chat/ognisko/odpowiedz.json'}))
+    .attach(new ChatPluginSendMessage({url: '/chat/reply'}))
     .attach(new ChatPluginSeparateDirectMessages())
     .attach(new ChatPluginTabbedInbox())
     .attach(new ChatPluginTitleAlert())
