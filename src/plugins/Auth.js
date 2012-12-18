@@ -102,6 +102,7 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
         var self = this,
             options = $.extend(true, {}, defaults, params),
             $dialog,
+            currentUser,
             $userInfo,
             // send notifications
             initUserInfo = function (user) {
@@ -109,10 +110,10 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
                     $userInfo.remove();
                     $userInfo = void 0;
                 }
-                var info = $.extend(true, {}, options.options.userInfo, user);
+                currentUser = $.extend(true, {}, options.options.userInfo, user);
                 $userInfo = self.dispatcher.filter(
-                    new Event(self, "auth.userinfo.filter", {user: info}),
-                    $(options.template.userInfo(info))
+                    new Event(self, "auth.userinfo.filter", {user: currentUser}),
+                    $(options.template.userInfo(currentUser))
                 ).getReturnValue();
                 return $userInfo;
             },
@@ -184,7 +185,7 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
                 return $dialog;
             },
 
-            // attch button
+            // attach button
             attach = function (event) {
                 var button = $(options.template.button(
                     $.extend(true, {}, options.options.button, event.parameters())
@@ -192,6 +193,14 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
                 options.methods.appendButton(button, $userInfo);
                 event.setReturnValue(button);
                 return true;
+            },
+
+            // allow/disallow TitleAlert
+            titleAlert = function (event, val) {
+                if (event.parameter('message').from.name === currentUser.name) {
+                    return false;
+                }
+                return val;
             };
 
         /**
@@ -245,7 +254,8 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
         self.mapping = function () {
             return {
                 "chat.init": init,
-                "auth.button.attach": attach
+                "auth.button.attach": attach,
+                "title_alert.allow.filter": titleAlert
             };
         };
 
