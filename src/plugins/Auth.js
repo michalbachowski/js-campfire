@@ -131,18 +131,22 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
                     new Event(self, "auth.login", {user: user, box: box})
                 );
             },
-            // check information about user
-            whoami = function (response) {
-                if (response.status !== 1 || !response.response.hasOwnProperty('whoami')) {
+            // handle current user information response
+            updateProfileInformation = function (response, key) {
+                if (response.status !== 1 || !response.hasOwnProperty(key)) {
                     return;
                 }
-                if (response.response.whoami[0].logged) {
-                    notifyLoggedIn(response.response.whoami[0]);
+                if (response[key].logged) {
+                    notifyLoggedIn(response[key]);
                 } else {
-                    notifyLoggedOut(response.response.whoami[0].name);
+                    notifyLoggedOut(response[key].name);
                     self.login();
                 }
                 self.dialog.hide();
+            },
+            // check information about user
+            whoami = function (response) {
+                updateProfileInformation(response, 'whoami');
             },
             onError = function (response, e) {
                 if (403 === response.status) {
