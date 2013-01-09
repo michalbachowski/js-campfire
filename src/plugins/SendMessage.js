@@ -2,6 +2,7 @@ var ChatPluginSendMessage = (function (jQuery, Listener, Event) {
     "use strict";
     var defaults = {
         ajax: {
+            type: 'POST',
             url: void 0,
             message: '',
             success: void 0,
@@ -50,7 +51,7 @@ var ChatPluginSendMessage = (function (jQuery, Listener, Event) {
                     url: prepareUrl(parameters.url),
                     data: event.parameter('message'),
                     dataType: "text",
-                    type: "POST",
+                    type: parameters.type,
                     success: function (response) {
                         var params = jQuery.parseJSON(response);
                         if (params.status !== 1) {
