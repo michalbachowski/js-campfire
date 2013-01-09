@@ -228,6 +228,7 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
             }
 
             var message = {
+                type: 'POST',
                 url: options.url.login,
                 message: { login: nick },
                 success: function (response) {
@@ -242,6 +243,7 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
         // logout guest
         self.logout = function () {
             var message = {
+                type: 'DELETE',
                 url: options.url.logout,
                 message: {},
                 success: function (response) {
