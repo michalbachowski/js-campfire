@@ -43,22 +43,19 @@ var ChatFactory = function ($, Event, EventDispatcher) {
                 if (1 !== r.status) {
                     return;
                 }
-                if (!r.response.hasOwnProperty('messages')) {
+                if (!r.hasOwnProperty('messages')) {
                     return;
                 }
                 // iterate throught response
-                var idx, event;
-                for (idx in r.response.messages) {
-                    if (!r.response.messages.hasOwnProperty(idx)) {
-                        continue;
-                    }
+                var i, event;
+                for (i = 0; i < r.messages.length; i = i + 1) {
                     // HOOK: dispatch message
                     event = dispatcher.notifyUntil(
                         new Event(
                             self,
                             "chat.message.dispatch",
                             {
-                                message: r.response.messages[idx]
+                                message: r.messages[i]
                             }
                         )
                     );
@@ -71,7 +68,7 @@ var ChatFactory = function ($, Event, EventDispatcher) {
                             self,
                             "chat.message.dispatched",
                             {
-                                message: r.response.messages[idx]
+                                message: r.messages[i]
                             }
                         )
                     );
