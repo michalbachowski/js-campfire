@@ -231,7 +231,7 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
                 url: options.url.login,
                 message: { login: nick },
                 success: function (response) {
-                    checkStatus();
+                    updateProfileInformation(response, 'profile');
                 },
                 error: onError
             };
