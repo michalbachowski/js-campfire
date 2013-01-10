@@ -205,6 +205,24 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
                     return false;
                 }
                 return val;
+            },
+
+
+            // make sure user is still logged in
+            responseReceived = function (event) {
+                // currentUser not set - too early to check
+                if (currentUser === void 0) {
+                    return;
+                }
+                // it user is logged out - do nothing
+                if (!currentUser.logged) {
+                    return;
+                }
+                if (403 === event.parameter('response').status) {
+                    notifyLoggedOut(currentUser.name);
+                    self.login();
+                    self.alert('You are logged out. Log in to post messages.', 'warning');
+                }
             };
 
         /**
@@ -261,10 +279,11 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
             return {
                 "chat.init": init,
                 "auth.button.attach": attach,
-                "title_alert.allow.filter": titleAlert
+                "title_alert.allow.filter": titleAlert,
+                "send_message.response.received": responseReceived
             };
         };
 
         return self;
     };
-}(jQuery, Listener, Event, Handlebars));
+}(jQuery, PluginUtility, Event, Handlebars));
