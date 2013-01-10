@@ -43,6 +43,8 @@ var ChatFactory = function ($, Event, EventDispatcher) {
                 if (1 !== r.status) {
                     return;
                 }
+                // HOOK: response received
+                dispatcher.notify(new Event(self, "chat.response.received", {response: r}));
                 if (!r.hasOwnProperty('messages')) {
                     return;
                 }
