@@ -64,6 +64,9 @@ var ChatPluginColorUsers = (function (PluginUtility, Event, $, Handlebars) {
             },
 
             success = function (response) {
+                if (!response.console) {
+                    return;
+                }
                 // attach button
                 self.dispatcher.notifyUntil(
                     new Event(
