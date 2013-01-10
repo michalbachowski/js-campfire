@@ -1,48 +1,42 @@
-var ChatPluginInfoBox = (function ($, Listener, Handlebars) {
+var ChatPluginInfoBox = (function ($, Listener, Handlebars, setTimeout) {
     "use strict";
 
     var defaults = {
         template: {
-            alert: Handlebars.compile('<div class="{{className}}">' +
+            alert: Handlebars.compile('<div class="alert {{infoBoxClassName type}} span9">' +
                     '<button type="button" class="close" data-dismiss="alert">×</button>' +
-                    '<strong class="alert-header"></strong> <span class="alert-content"></span>' +
+                    '<strong class="alert-header">{{infoBoxHeader type}}</strong> ' +
+                    '<span class="alert-content">{{content}}</span>' +
                 '</div>')
         },
         options: {
-            alert: {
-                className: 'alert'
-            },
-            info: {
-                header: 'Info',
+            visibilityTimeout: 10000, // miliseconds (default: 15 seconds)
+            template: {
                 content: 'message',
                 type: 'warning'
+            },
+            classNames: {
+                warning: '',
+                error: 'alert-error',
+                success: 'alert-success',
+                info: 'alert-info'
+            },
+            headers: {
+                warning: 'Warning',
+                error: 'Error',
+                success: 'Success',
+                info: 'Info'
             }
         },
         methods: {
-            insert: function (box) {
-                box.appendTo("#body");
-            },
             display: function (box) {
-                box.slideDown("slow");
+                box.hide().insertBefore(".tabbable").slideDown("slow");
             },
-            prepare: (function () {
-                var types = {
-                        'warning': '',
-                        'error': 'alert-error',
-                        'success': 'alert-success',
-                        'info': 'alert-info'
-                    },
-                    headers = {
-                        'warning': 'Warning',
-                        'error': 'Error',
-                        'success': 'Success',
-                        'info': 'Info'
-                    };
-                return function (node, data) {
-                    return node.removeClass('alert-error alert-success alert-info').addClass(types[data.type])
-                        .find(".alert-header").html(headers[data.type]).end();
-                };
-            }())
+            hide: function (box) {
+                box.slideUp("slow", function () {
+                    $(this).remove();
+                });
+            }
         }
     };
 
@@ -51,24 +45,37 @@ var ChatPluginInfoBox = (function ($, Listener, Handlebars) {
         
         var self = this,
             options = $.extend(true, {}, defaults, params),
-            $box,
+            
             display = function (event) {
-                var data = $.extend(true, {}, options.options.info, event.parameters());
-                $box.find(".alert-content").html(data.content).end();
-                options.methods.display(options.methods.prepare($box, data));
+                var data = $.extend(true, {}, options.options.template, event.parameters()),
+                    $box = $(options.template.alert(data));
+                options.methods.display($box);
+                setTimeout(function () {
+                    options.methods.hide($box);
+                }, options.options.visibilityTimeout);
                 return true;
-            },
-
-            init = function (event) {
-                $box = $(options.template.alert(options.options.alert)).hide();
-                options.methods.insert($box);
             };
+
+        // header generator
+        Handlebars.registerHelper('infoBoxHeader', function (type) {
+            if (!options.options.headers.hasOwnProperty(type)) {
+                type = options.template.type;
+            }
+            return options.options.headers[type];
+        });
+
+        // className generator
+        Handlebars.registerHelper('infoBoxClassName', function (type) {
+            if (!options.options.headers.hasOwnProperty(type)) {
+                type = options.template.type;
+            }
+            return options.options.classNames[type];
+        });
 
         this.mapping = function () {
             return {
-                "info_box.display": display,
-                "chat.init": init
+                "info_box.display": display
             };
         };
     };
-}(jQuery, Listener, Handlebars));
+}(jQuery, Listener, Handlebars, setTimeout));
