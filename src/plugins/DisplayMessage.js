@@ -43,11 +43,11 @@ var ChatPluginDisplayMessage = (function (jQuery, Listener, Event, Handlebars) {
                     new Event(self, "display_message.name.filter", {message: message}),
                     message.from.name
                 ).getReturnValue();
-
+                
                 // HOOK: prepare message
                 content = self.dispatcher.filter(
                     new Event(self, "display_message.message.filter", {message: message}),
-                    message.message
+                    message.text
                 ).getReturnValue();
 
                 // HOOK: prepare node
