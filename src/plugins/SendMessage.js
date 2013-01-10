@@ -24,6 +24,14 @@ var ChatPluginSendMessage = (function (jQuery, Listener, Event) {
                 return eventUrl;
             },
             invokeCallback = function (response, callback) {
+                // HOOK: notify about received response to requst
+                self.dispatcher.notify(
+                    new Event(
+                        self,
+                        "send_message.response.received",
+                        {response: response}
+                    )
+                );
                 if (callback === void 0) {
                     return;
                 }
