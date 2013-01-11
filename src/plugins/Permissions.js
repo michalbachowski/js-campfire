@@ -23,10 +23,10 @@ var ChatPluginPermissions = (function (PluginUtility, Event, $, Handlebars) {
             list: Handlebars.compile(' ' +
                 '<table class="table table-hover">' +
                     '<caption>{{header}}</caption>' +
-                    '<thead><tr><th>{{user}}</th><th>{{plugin}}</th><th>{{actions}}</th></tr></thead>' +
+                    '<thead><tr><th>{{plugin}}</th><th>{{action}}</th><th>{{users}}</th></tr></thead>' +
                     '<tbody>' +
                     '{{#each rows}}' +
-                    '<tr><td>{{this.user}}</td><td>{{this.plugin}}</td><td>{{this.actions}}</td></tr>' +
+                    '<tr><td>{{this.plugin}}</td><td>{{this.action}}</td><td>{{this.users}}</td></tr>' +
                     '{{/each}}' +
                     '</tbody>' +
                 '</table>')
@@ -43,9 +43,9 @@ var ChatPluginPermissions = (function (PluginUtility, Event, $, Handlebars) {
             },
             list: {
                 header: 'Permissions',
-                user: 'User',
+                users: 'Users',
                 plugin: 'Plugin name',
-                actions: 'Actions',
+                action: 'Action',
                 rows: []
             }
         }
@@ -60,7 +60,7 @@ var ChatPluginPermissions = (function (PluginUtility, Event, $, Handlebars) {
         // handle init
             showList = function (response) {
                 options.methods.appendList($dialog, options.template.list(
-                    $.extend(true, {}, options.options.list, {rows: response.response.console[0]})
+                    $.extend(true, {}, options.options.list, {rows: response.console})
                 ));
             },
 
