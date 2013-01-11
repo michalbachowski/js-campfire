@@ -35,7 +35,7 @@ var ChatPluginInputHint = (function (Listener, $, Event) {
 
             // callback for init method
             callback = function (response) {
-                if (typeof response.response.console[0] !== 'object') {
+                if (!response.hasOwnProperty('console')) {
                     return;
                 }
                 var form = self.dispatcher.notifyUntil(
@@ -43,14 +43,14 @@ var ChatPluginInputHint = (function (Listener, $, Event) {
                     ),
                     input,
                     i,
-                    tmp = response.response.console[0],
+                    tmp = response.console,
                     item;
                 if (!form.isProcessed()) {
                     throw "No form available";
                 }
                 for (i = 0; i < tmp.length; i = i + 1) {
                     item = tmp[i];
-                    commands.push('$' + item.plugin + ' ' + item.method + ' ' + item.args);
+                    commands.push('$' + item.plugin + ' ' + item.action + ' ' + item.args);
                 }
                 options.methods.getInput(form.getReturnValue()).typeahead(
                     $.extend(true, {}, options.options.typeahead, {source: source})
