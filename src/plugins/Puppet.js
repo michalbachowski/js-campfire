@@ -28,7 +28,7 @@ var ChatPluginPuppet = (function (Listener, $, Event, Handlebars) {
                         new Event(self, "form.get", {})
                     ),
                     button = $(options.template.button(
-                        $.extend(true, {}, options.button, {puppet: response.response.puppet[0][0]})
+                        $.extend(true, {}, options.button, {puppet: response.puppet[0]})
                     ));
                 if (!form.isProcessed()) {
                     return;
