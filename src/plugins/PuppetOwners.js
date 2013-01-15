@@ -60,7 +60,7 @@ var ChatPluginPuppetOwners = (function (PluginUtility, Event, $, Handlebars) {
         // handle init
             showList = function (response) {
                 options.methods.appendList($dialog, options.template.list(
-                    $.extend(true, {}, options.options.list, {rows: response.response.puppet[0]})
+                    $.extend(true, {}, options.options.list, {rows: response.puppet})
                 ));
             },
 
