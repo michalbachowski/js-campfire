@@ -19,6 +19,7 @@ campfire
     .attach(new ChatPluginDirect())
     .attach(new ChatPluginDispatcher())
     .attach(new ChatPluginDisplayMessage())
+    .attach(new ChatPluginError500())
     .attach(new ChatPluginForm())
     .attach(new ChatPluginHighlight())
     .attach(new ChatPluginLastFm({apiKey: '28c6d3ef7a0ffbd8d88d48cab1e332b7'}))
