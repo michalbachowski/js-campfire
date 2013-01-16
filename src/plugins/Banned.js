@@ -60,7 +60,7 @@ var ChatPluginBanned = (function (PluginUtility, Event, $, Handlebars) {
         // handle init
             showBanned = function (response) {
                 options.methods.appendBanned($dialog, options.template.banned(
-                    $.extend(true, {}, options.options.banned, {users: response.response.ban[0]})
+                    $.extend(true, {}, options.options.banned, {users: response.ban})
                 ));
             },
 
