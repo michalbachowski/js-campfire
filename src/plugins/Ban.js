@@ -62,7 +62,7 @@ var ChatPluginBan = (function (PluginUtility, Event, $, Handlebars, window) {
                     return;
                 }
                 // print information about about ban status
-                self.alert(response.ban[0]);
+                self.alert(response.ban, 'success');
             },
 
             banUser = function (nick, seconds) {
@@ -95,11 +95,14 @@ var ChatPluginBan = (function (PluginUtility, Event, $, Handlebars, window) {
 
         // handle init
             success = function (response) {
-                allowBan = response.response.console[0] !== "Access denied" && response.response.console[0];
                 // handle clicking on button
-                if (!allowBan) {
+                if (!response.hasOwnProperty('console')) {
                     return;
                 }
+                if (!response.console) {
+                    return;
+                }
+                allowBan = true;
                 // show hidden buttons
                 $("body ." + options.button.className + ":hidden").show();
                 // handle 'click' events on 'Ban' buttons
@@ -146,7 +149,6 @@ var ChatPluginBan = (function (PluginUtility, Event, $, Handlebars, window) {
                 if (ip.length > 0) {
                     options.methods.ip(node, options.template.ip(data.from));
                 }
-
                 // add ban button (always, will be hidden when not allowed)
                 self.dispatcher.notifyUntil(
                     new Event(self, "users_list.button.add",
