@@ -82,6 +82,14 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
                 dialog.modal('hide');
             },
 
+            showError: function (dialog, error) {
+                dialog.find(".control-group").addClass("error").find(".help-block").text(error);
+            },
+
+            hideErrors: function (dialog) {
+                dialog.find(".error").removeClass("error").find(".help-block").text('');
+            },
+
             showUserInfo: function (box) {
                 $(".navbar-inner .container-fluid").append(box).tooltip({selector: "[rel=tooltip]", placement: 'bottom'});
             },
@@ -184,6 +192,8 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
                     $dialog = $(options.template.dialog(options.options.dialog)).on("submit", function (e) {
                         self.login(options.methods.selectNick(e.target));
                         return false;
+                    }).on("show", function (e) {
+                        options.methods.hideErrors($(e.target));
                     });
                 }
                 return $dialog;
@@ -252,7 +262,14 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
                 success: function (response) {
                     updateProfileInformation(response, 'profile');
                 },
-                error: onError
+                error: function (response, e) {
+                    onError(response, e);
+                    // show error message
+                    var txt = $.parseJSON(response.responseText);
+                    if (txt.hasOwnProperty('error') && txt.error.hasOwnProperty('message')) {
+                        options.methods.showError($dialog, txt.error.message);
+                    }
+                }
             };
             self.dispatcher.notifyUntil(
                 new Event(self, "send_message.send", message)
