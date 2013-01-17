@@ -1,65 +1,128 @@
-var ChatPluginNap = (function (jQuery, Listener, Event, setInterval, clearInterval) {
+var ChatPluginNap = (function (jQuery, PluginUtility, Event, setInterval, clearInterval, Handlebars) {
     "use strict";
-    return function (params) {
-        Listener.apply(this, arguments);
+    var defaults = {
+        button: {
+            label: '<i class="icon" />',
+            className: 'button-nap',
+            attrs: 'data-toggle="button" rel="tooltip" title="Take nap"',
+            split: true,
+            options: {
+                className: 'nap-options',
+                alternatives: [
+                    {label: '<i class="icon"></i> Hide nap messages', value: 'hide-nap-messages'}
+                ]
+            }
+        },
+        messageInterval: 4 * 60,    // seconds
+        methods: {
+            notifyStateChange: function (button, event) {
+                return button.find(".nap-options a .icon").toggleClass('icon-ok');
+            },
+            
+            getNapToggler: function (button) {
+                return button.find('.button-nap');
+            },
 
-        var options = jQuery.extend(
-                {
-                    messageInterval: 4 * 60,    // seconds
-                    labelSleep: "take a nap",
-                    labelWakeUp: "wake up"
-                },
-                params
-            ),
+            changeState: (function () {
+                var states = {
+                    sleep: {
+                        icon: "icon-eye-close",
+                        title: 'Wake up'
+                    },
+                    wakeup: {
+                        icon: "icon-eye-open",
+                        title: 'Sleep'
+                    }
+                };
+                return function (state, node) {
+                    node
+                        .attr("data-original-title", states[state].title)
+                        .find(".icon")
+                        .removeClass("icon-eye-open icon-eye-close")
+                        .addClass(states[state].icon);
+                };
+            }())
+        },
+        clickEventSelector: '.nap-options a',
+        message: {
+            message: '/nap'
+        }
+    };
+
+    return function (params) {
+        PluginUtility.apply(this, arguments);
+
+        var options = jQuery.extend(true, {}, defaults, params),
             self = this,
+            hideNap = false,
+            $button,
             intervalTime = options.messageInterval * 1000,
             interval,
             send = function () {
-                self.dispatcher.notifyUntil(
-                    new Event(
-                        self,
-                        "send_message.send",
-                        {
-                            message: {
-                                message: "/nap"
-                            }
-                        }
-                    )
-                );
+                var message = self.dispatcher.filter(
+                        new Event(self, "form.message.filter", {}),
+                        jQuery.extend(true, {}, options.message)
+                    ).getReturnValue(),
+                    event = self.dispatcher.notifyUntil(
+                        new Event(
+                            self,
+                            "send_message.send",
+                            {message: message}
+                        )
+                    );
             },
             sleep = function () {
                 if (!interval) {
                     interval = setInterval(send, intervalTime);
                 }
-                return options.labelWakeUp;
+                options.methods.changeState('sleep', jQuery(this));
+                return true;
             },
             wakeUp = function () {
                 if (interval) {
                     clearInterval(interval);
                     interval = null;
                 }
-                return options.labelSleep;
+                options.methods.changeState('wakeup', jQuery(this));
+                return true;
             },
+
+            changeState = function (e) {
+                hideNap = !hideNap;
+                self.config.write('nap.hide', hideNap);
+                options.methods.notifyStateChange($button, e);
+                return false;
+            },
+
             init = function () {
-                self.dispatcher.notifyUntil(
+                // attach button
+                $button = self.dispatcher.notifyUntil(
                     new Event(
                         self,
                         "buttonbar.button.attach",
-                        {
-                            label: options.labelSleep,
-                            callbacks: [
-                                sleep,
-                                wakeUp
-                            ]
-                        }
+                        jQuery.extend(true, {}, options.button, {label: options.labelSleep})
                     )
-                );
+                ).getReturnValue();
+                // read config
+                var hideNapTmp = self.config.read('nap.hide'),
+                    toggler;
+                if (hideNapTmp !== hideNap && hideNapTmp !== void 0) {
+                    changeState();
+                }
+                toggler = options.methods.getNapToggler($button).toggle(sleep, wakeUp);
+                // toggle first state
+                wakeUp.apply(toggler);
+                // handle clicks
+                jQuery("body").on("click", options.clickEventSelector, changeState);
             },
 
             filter = function (event) {
                 var data = event.parameter("message");
-                if (data.hasOwnProperty("nap")) {
+                if (!data.hasOwnProperty("nap")) {
                     return;
+                }
+                if (hideNap) {
+                    return true;
                 }
                 if (Math.floor(Math.random() * 10) > 9) {
                     return true;
@@ -68,10 +131,9 @@ var ChatPluginNap = (function (jQuery, Listener, Event, setInterval, clearInterv
 
         this.mapping = function () {
             return {
-                "dispatcher.message.display": [filter, 400],
-                "chat.init": init
+                "dispatcher.message.display": [filter, 500],
+                "chat.init": [init, 790]
             };
         };
-
     };
-}(jQuery, Listener, Event, setInterval, clearInterval));
+}(jQuery, PluginUtility, Event, setInterval, clearInterval, Handlebars));

@@ -7,3 +7,15 @@
 [submodule "vendors/jquery-titlealert"]
 	path = vendors/jquery-titlealert
 	url = git://github.com/heyman/jquery-titlealert.git
+[submodule "vendors/moment"]
+	path = vendors/moment
+	url = git://github.com/timrwood/moment.git
+[submodule "vendors/jquery-color"]
+	path = vendors/jquery-color
+	url = git://github.com/jquery/jquery-color.git
+[submodule "vendors/bootstrap"]
+	path = vendors/bootstrap
+	url = git://github.com/twitter/bootstrap.git
+[submodule "vendors/jstorage"]
+	path = vendors/jstorage
+	url = git://github.com/andris9/jStorage.git

@@ -1,17 +1,37 @@
-var ChatPluginSendMessage = (function (jQuery, Listener) {
+var ChatPluginSendMessage = (function (jQuery, Listener, Event) {
     "use strict";
-    return function (defaultUrl, timeout) {
+    var defaults = {
+        ajax: {
+            type: 'POST',
+            url: void 0,
+            message: '',
+            success: void 0,
+            error: void 0
+        },
+        url: "/chat/response.json",
+        timeout: 10 // seconds
+    };
+
+    return function (params) {
         Listener.apply(this, arguments);
 
         var self   = this,
-            url = defaultUrl || "/chat/response.json",
+            options = jQuery.extend(true, {}, defaults, params),
             prepareUrl = function (eventUrl) {
                 if (eventUrl === void 0) {
-                    return url;
+                    return options.url;
                 }
                 return eventUrl;
             },
             invokeCallback = function (response, callback) {
+                // HOOK: notify about received response to requst
+                self.dispatcher.notify(
+                    new Event(
+                        self,
+                        "send_message.response.received",
+                        {response: response}
+                    )
+                );
                 if (callback === void 0) {
                     return;
                 }
@@ -22,31 +42,44 @@ var ChatPluginSendMessage = (function (jQuery, Listener) {
                 }
             },
             send = function (event) {
+                var parameters = jQuery.extend(
+                    true,
+                    {},
+                    options.ajax,
+                    self.dispatcher.filter(
+                        new Event(
+                            self,
+                            "send_message.message.filter",
+                            {event: event}
+                        ),
+                        event.parameters()
+                    ).getReturnValue()
+                );
                 jQuery.ajax({
-                    url: prepareUrl(event.parameter("url")),
+                    url: prepareUrl(parameters.url),
                     data: event.parameter('message'),
                     dataType: "text",
-                    type: "POST",
+                    type: parameters.type,
                     success: function (response) {
                         var params = jQuery.parseJSON(response);
                         if (params.status !== 1) {
-                            invokeCallback(params, event.parameter("error"));
+                            invokeCallback(params, parameters.error);
                         } else {
-                            invokeCallback(params, event.parameter("success"));
+                            invokeCallback(params, parameters.success);
                         }
                     },
                     error: function (response) {
-                        invokeCallback(response, event.parameter("error"));
+                        invokeCallback(response, parameters.error);
                     },
-                    timeout: (timeout || 10) * 1000
+                    timeout: options.timeout * 1000
                 });
                 return true;
             };
-     
+        
         this.mapping = function () {
             return {
                 "send_message.send": send
             };
         };
     };
-}(jQuery, Listener));
+}(jQuery, Listener, Event));

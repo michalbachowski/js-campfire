@@ -1,16 +1,18 @@
-var ChatPluginMe = function () {
+var ChatPluginMe = (function (Listener) {
     "use strict";
-    Listener.apply( this, arguments );
+    return function () {
+        Listener.apply(this, arguments);
 
-    var filter = function (event, node) {
-        if (event.parameter("message").me) {
-            node.addClass("me");
-        }
-        return node;
-    };
-    this.mapping = function () {
-        return {
-            "display_message.node.filter": filter
+        var filter = function (event, node) {
+            if (event.parameter("message").me) {
+                node.addClass("me");
+            }
+            return node;
+        };
+        this.mapping = function () {
+            return {
+                "display_message.node.filter": filter
+            };
         };
     };
-};
+}(Listener));

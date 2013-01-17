@@ -1,0 +1,141 @@
+/* Landscape phones and down */
+@media (max-width: 480px) {  
+}
+
+/* portrait tablet */
+@media (max-width: 768px) {
+    .users-list:not(.in) {
+        border-width: 0 !important;
+        margin-bottom: 1em;
+    }
+    #inbox {
+        clear: both;
+    }
+}
+
+/* Landscape phone to portrait tablet */
+@media (max-width: 979px) {
+    .users-list:not(.in) {
+        border-width: 0 !important;
+    }
+}
+
+/* Portrait tablet to landscape and desktop */
+@media (min-width: 768px) and (max-width: 979px) {  
+
+}
+/* small/large desktop */
+@media (min-width: 980px) {
+    body {
+        padding-top: 60px;
+    }
+}
+@media (min-width: 979px) and (max-width: 1120px) {
+}
+
+/* Large desktop */
+@media (min-width: 1200px) {
+    .navbar .brand {
+    }
+}
+
+body {
+    background-color: #ebebeb;
+}
+
+/* form */
+#chat-form fieldset {
+}
+    #chat-form input[type=text] {
+        width: 70%;
+    }
+/* button bar */
+.youtube-player {
+    margin-left: -180px;
+}
+
+/* users list */
+.users-list {
+    min-height: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+    .users-list > li {
+        position: relative;
+        margin-top: 19px;
+    }
+    .users-list > li:first-child {
+    }
+    .users-list > li:last-child {
+        margin-bottom: 19px;
+    }
+        .users-list .chat-user .user-avatar {
+            height: 2.4em;
+            max-width: 2.5em;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .users-list .chat-user .user-nick.btn {
+            padding: 0;
+            margin-top: 0;
+            margin-bottom: 0;
+            margin-right: 0;
+            text-align: left;
+            background-color: inherit;
+        }
+        .users-list .chat-user .user-nick,
+        .users-list .chat-user .user-title,
+        .users-list .chat-user .user-ip {
+            display: block;
+        }
+        .users-list .chat-user .user-nick {
+            margin-left: 2.8em;
+        }
+        .users-list .chat-user .user-title {
+            margin-left: 3.2em;
+        }
+        .users-list .chat-user .user-ip {
+        }
+
+/* inbox + tabbable inbox */
+.nav {
+    margin-bottom: 0;
+}
+#inbox, .tabbable[class*="span"] {
+    margin-left: 0;
+}
+    .nav-tabs li {
+        position: relative;
+    }
+        .nav-tabs .badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin-top: -0.6em;
+            margin-right: -20%;
+            z-index: 100;
+        }
+
+/* chat messages */
+.me strong, .me em, .me span {
+    font-weight: normal;
+    font-style: italic;
+}
+.dice-roll strong, .dice-roll em, .dice-roll span {
+    color: #ab0000;
+    font-weight: bold;
+}
+.text-highlight {
+    background-color: rgba(171, 0, 0, 0.2);
+}
+
+/* other */
+.color-example {
+    display: block;
+    width: 7em;
+    height: 2em;
+    line-height: 2em;
+    text-align: center;
+    border: 1px solid #000;
+}

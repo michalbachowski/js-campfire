@@ -1,124 +1,235 @@
-function ChatPluginUsersList(insertAfter, refreshInterval) {
-    Listener.apply( this, arguments );
-
-    this.mapping = function() {
-        return {
-            "dispatcher.message.displayed": display,
-            "users_list.node.get": getNode
-        };
-    };
- 
-    var self  = this;
-    var users = {};
-    var refreshTimeout = (refreshInterval || 5) * 60;
-    var box = $( "<ul />" ).addClass( "users-list" );
-    jQuery(insertAfter || "#inbox").after(box);
-
-    var display = function(event) {
-        var date  = new Date();
-        var time = date.getTime() / 1000 - refreshTimeout;
-        var data = event.parameter("message");
-
-        if ( data.date <= time ) {
-            return;
-        }
-        getNode(event);
-    };
-
-    var getNode = function(event) {
-        var data = event.parameter("message");
-
-        if ( data.from.name in users ) {
-            users[data.from.name].lastResponse = data.date;
-        } else {
-            users[data.from.name] = {
-                user: data.from,
-                node: displayUser(data),
-                lastResponse: data.date
-            };
-        }
-        event.setReturnValue(users[data.from.name].node);
-    };
-
-    var displayUser = function(data) {
-        var node = jQuery( "<li />" );
-        var user = data.from;
-
-        // HOOK: filter user avatar
-        var avatarUrl = self.dispatcher.filter(
-            new Event(self, "users_list.avatar.filter", {message: data}),
-            user.avatar
-        );
-        if ( avatarUrl ) {
-            node.append(jQuery( "<img />" ).attr( "src", user.avatar ));
-        }
-
-        // HOOK: filter user nick
-        var userNick = self.dispatcher.filter(
-            new Event(self, "users_list.nick.filter", {message: data}),
-            user.name
-        ).getReturnValue();
-
-        // HOOK: filter user nick node
-        var nickNode = self.dispatcher.filter(
-            new Event(self, "users_list.nick_node.filter", {message: data}),
-            jQuery( "<strong />" ).addClass( "user-name" ).append(userNick)
-        ).getReturnValue();
-
-        if ( nickNode ) {
-            node.append(nickNode);
-        }
-
-        // HOOK: filter user status
-        var userStatus = self.dispatcher.filter(
-            new Event(self, "users_list.title.filter", {message: data}),
-            user.title
-        ).getReturnValue();
-        
-        if ( userStatus ) {
-            node.append(jQuery( "<small />" ).append( userStatus ));
-        }
-
-        // HOOK: filter user node
-        node = self.dispatcher.filter(
-            new Event(self, "users_list.node.filter", {message: data}),
-            node
-        ).getReturnValue();
-
-        // append node
-        node.data("chat-user", user).data("chat-user-nick", userNick);
-        var destination = box.children( "li" ).filter(userFilter(userNick)).first();
-        if( 0 === destination.length ) {
-            box.append( node );
-        } else {
-            destination.before( node );
-        }
-        node.slideDown( "slow" );
-        return node;
-    };
-    var userFilter = function(userNick) {
-        var usr = jQuery(this).data( "chat-user" );
-        return function() {
-            return jQuery(this).data("chat-user-nick") > userNick;
-        };
-    };
-
-    var nodeRemover = function() {
-        // HOOK: notify that user has been removed from users list
-        self.dispatcher.notify(new Event(self, "users_list.node.removed", {node: jQuery(this)}));
-        jQuery( this ).remove();
-    };
-    var refresh = function() {
-        var i;
-        var date = new Date();
-        var time = date.getTime() / 1000 - refreshTimeout;
-        for ( i in users ) {
-            if ( users[i].lastResponse > time ) {
-                continue;
+var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval) {
+    "use strict";
+    var defaults = {
+        refresh: 5 * 60, // seconds
+        methods: {
+            insert: function (box) {
+                box.appendTo("#body").tooltip({selector: '[rel=tooltip]', placement: 'bottom'});
+            },
+            prepareInbox: function ($inbox) {
+                $inbox.removeClass('span12').addClass('span10');
+            },
+            prepareTabs: function ($tabs) {
+                $tabs.removeClass('span12').addClass('span10');
+            },
+            prepareNode: function (node) {
+                return node;
             }
-            users[i].node.slideUp("slow", nodeRemover);
-            delete users[i];
+        },
+        template: {
+            user: Handlebars.compile('<li class="row-fluid chat-user" data-nick="{{nick}}">' +
+                    '<img src="{{avatar}}" class="user-avatar" />' +
+                    '<strong class="user-nick">{{nick}}</strong>' +
+                    '<small class="user-title">{{title}}</small>' +
+                    '<div class="btn-group user-buttonbar" />' +
+                '</li>'),
+            box: Handlebars.compile('<ul class="users-list span2 nav nav-collapse well pull-right" />'),
+            button: Handlebars.compile('<span class="btn btn-mini {{className}}" {{{attrs}}}>' +
+                '{{{label}}}' +
+                '{{#if options}}' +
+                    ' <i class="caret" />' +
+                '{{/if}}' +
+                '</span>' +
+                '{{#if options}}' +
+                    '<ul class="dropdown-menu {{options.className}}">' +
+                    '{{#each options.alternatives}}' +
+                    '<li><a href="#" data-value="{{this.value}}">{{this.label}}</a></li>' +
+                    '{{/each}}' +
+                '</ul>' +
+                '{{/if}}')
+        },
+        defaults: {
+            attrs: {
+                label: 'click',
+                className: '',
+                attrs: '',
+                options: void 0
+            }
         }
     };
-    var interval = setInterval(refresh, refreshTimeout);
-}
+
+    return function (params) {
+        Listener.apply(this, arguments);
+
+        var self  = this,
+            users = {},
+            options = $.extend(true, {}, defaults, params),
+            cleaningTimeout = options.refresh,
+            $box,
+            userTemplate = options.template.user,
+
+            // creates new node
+            createNode = function (data) {
+                var user = {
+                        // HOOK: filter user avatar
+                        avatar: self.dispatcher.filter(
+                            new Event(self, "users_list.avatar.filter", {message: data}),
+                            data.from.avatar
+                        ).getReturnValue(),
+
+                        // HOOK: filter user nick
+                        nick: self.dispatcher.filter(
+                            new Event(self, "users_list.nick.filter", {message: data}),
+                            data.from.name
+                        ).getReturnValue(),
+                        
+                        // HOOK: filter user status
+                        title: self.dispatcher.filter(
+                            new Event(self, "users_list.title.filter", {message: data}),
+                            data.from.title
+                        ).getReturnValue()
+                    },
+
+                    node = $(options.template.user(user));
+
+                return node;
+            },
+
+            // displays given node
+            displayNode = function (node) {
+                // find place where to put new node
+                var nick = node.hide().get(0).dataset.nick,
+                    destination = $box
+                        .children()
+                        .filter(function () {
+                            return this.dataset.nick > nick;
+                        })
+                        .first();
+                node = options.methods.prepareNode(node);
+                // append node
+                if (0 === destination.length) {
+                    $box.append(node);
+                } else {
+                    destination.before(node);
+                }
+                node.slideDown("slow");
+            },
+
+            // displays user
+            // if structure for given user is missing - creates new one
+            display = function (event) {
+                var date  = new Date(),
+                    time = date.getTime() / 1000 - cleaningTimeout,
+                    data = event.parameter("message");
+
+                if (data.date <= time) {
+                    return;
+                }
+
+                if (!users.hasOwnProperty(data.from.name)) {
+                    users[data.from.name] = {
+                        user: data.from,
+                        node: createNode(data),
+                        lastResponse: data.date
+                    };
+
+                    // HOOK: filter user node
+                    users[data.from.name].node = self.dispatcher.filter(
+                        new Event(self, "users_list.node.filter", {message: data}),
+                        users[data.from.name].node
+                    ).getReturnValue();
+
+                    // display node
+                    displayNode(users[data.from.name].node);
+                }
+                users[data.from.name].lastResponse = data.date;
+            },
+            
+            // returns node information
+            // if node for given user is missing - does nothing
+            getNode = function (event) {
+                var nick = event.parameter("nick");
+
+                if (users.hasOwnProperty(nick)) {
+                    event.setReturnValue(users[nick].node);
+                }
+                return true;
+            },
+            
+            // returns user data
+            // if data for given user is missing - does nothins
+            getUser = function (event) {
+                var nick = event.parameter("nick");
+                if (users.hasOwnProperty(nick)) {
+                    event.setReturnValue(users[nick].user);
+                }
+                return true;
+            },
+
+            // adds button to user node
+            addButton = function (event) {
+                var nick = event.parameter("nick"),
+                    button;
+                if (!users.hasOwnProperty(nick)) {
+                    return false;
+                }
+                button = $(options.template.button(
+                    $.extend(true, {}, options.defaults.attrs, event.parameters())
+                ));
+                users[nick].node.find('.user-buttonbar').append(button);
+                event.setReturnValue(button);
+                return true;
+            },
+
+            // remove node
+            nodeRemover = function () {
+                // HOOK: notify that user has been removed from users list
+                self.dispatcher.notify(
+                    new Event(self, "users_list.node.removed", {node: $(this)})
+                );
+                $(this).remove();
+            },
+
+            // periodically cleans users list
+            cleaner = function () {
+                var i,
+                    date = new Date(),
+                    time = date.getTime() / 1000 - cleaningTimeout;
+
+                for (i in users) {
+                    if (!users.hasOwnProperty(i)) {
+                        continue;
+                    }
+                    if (users[i].lastResponse > time) {
+                        continue;
+                    }
+                    users[i].node.slideUp("slow", nodeRemover);
+                    delete users[i];
+                }
+            },
+
+            // init class
+            init = function (event) {
+                // add users box
+                $box = $(options.template.box());
+                options.methods.insert($box);
+            },
+
+            // prepare inbox to work with users list
+            prepareInbox = function (event, $inbox) {
+                options.methods.prepareInbox($inbox);
+                return $inbox;
+            },
+            // prepare tabs to work with users list
+            prepareTabs = function (event, $tabs) {
+                options.methods.prepareTabs($tabs);
+                return $tabs;
+            };
+
+        // start cleaner loop
+        setInterval(cleaner, cleaningTimeout);
+
+        this.mapping = function () {
+            return {
+                "dispatcher.message.displayed": display,
+                "users_list.node.get": getNode,
+                "users_list.user.get": getUser,
+                "users_list.button.add": addButton,
+                "display_message.inbox.filter": prepareInbox,
+                "separate_direct_messages.tabs.filter": prepareTabs,
+                "chat.init": [init, 410]
+            };
+        };
+     
+    };
+}(Listener, Event, $, Handlebars, setInterval));

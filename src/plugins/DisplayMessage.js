@@ -1,25 +1,36 @@
-var ChatPluginDisplayMessage = (function (jQuery, Listener, Event) {
+var ChatPluginDisplayMessage = (function (jQuery, Listener, Event, Handlebars) {
     "use strict";
-    return function (inboxId) {
+    var defaults = {
+        inbox: "#inbox",
+        template: {
+            message: Handlebars.compile('<p id="{{id}}" class="const" data-author="{{from.name}}">' +
+                '<strong class="user-name">{{displayName}}</strong> ' +
+                '<span class="message">{{{message}}}</span>' +
+                '</p>'),
+            inbox: '<div class="span12 well" id="inbox"></div>'
+        },
+        methods: {
+            displayInbox: function (inbox) {
+                inbox.appendTo("#body");
+            }
+        }
+    };
+
+    return function (params) {
         Listener.apply(this, arguments);
         
         var self   = this,
-            $inbox = jQuery(inboxId || "#inbox"),
+            options = jQuery.extend(true, {}, defaults, params),
+            $inbox,
             createNode = function (from, displayName, message, id) {
-                return jQuery("<p />")
-                    .addClass("const")
-                    .data("chat-user", from)
-                    .attr("id", "m" + id)
-                    .attr("data-author", from.name) // CSS
-                    .hide()
-                    .append(jQuery("<strong />").append(displayName).addClass("user-name"))
-                    .append(jQuery("<span />").append(" ").append(message).addClass("message"));
+                return jQuery(options.template.message({id: id, from: from, displayName: displayName, message: message}));
             },
             display = function (event) {
                 var message = event.parameter("message"),
                     userName,
                     content,
-                    node;
+                    node,
+                    inbox;
                 if (message === void 0) {
                     return;
                 }
@@ -29,33 +40,52 @@ var ChatPluginDisplayMessage = (function (jQuery, Listener, Event) {
 
                 // HOOK: prepare username
                 userName = self.dispatcher.filter(
-                    new Event(self, "display_message.name.filter", {"message": message}),
+                    new Event(self, "display_message.name.filter", {message: message}),
                     message.from.name
                 ).getReturnValue();
-
+                
                 // HOOK: prepare message
                 content = self.dispatcher.filter(
-                    new Event(self, "display_message.message.filter", {"message": message}),
-                    message.message
+                    new Event(self, "display_message.message.filter", {message: message}),
+                    message.text
                 ).getReturnValue();
 
                 // HOOK: prepare node
                 node = self.dispatcher.filter(
-                    new Event(self, "display_message.node.filter", {"message": message}),
+                    new Event(self, "display_message.node.filter", {message: message}),
                     createNode(message.from, userName, content, message.id)
+                ).getReturnValue().hide();
+
+                // HOOK: prepare inbox (it is possible to append message to other container)
+                inbox = self.dispatcher.filter(
+                    new Event(self, "display_message.inbox.pick", {event: event, message: message, node: node}),
+                    $inbox
                 ).getReturnValue();
 
                 // append node
-                $inbox.prepend(node);
+                inbox.prepend(node);
                 node.slideDown("slow");
 
                 return true;
+            },
+            init = function (event) {
+                // HOOK: filter inbox
+                $inbox = self.dispatcher.filter(
+                    new Event(self, "display_message.inbox.filter", {event: event, label: 'Inbox'}),
+                    jQuery(options.template.inbox)
+                ).getReturnValue();
+                options.methods.displayInbox($inbox);
+                // HOOK: notify inbox has been displayed
+                self.dispatcher.notify(
+                    new Event(self, "display_message.inbox.displayed", {event: event, inbox: $inbox})
+                ).getReturnValue();
             };
 
         this.mapping = function () {
             return {
-                "dispatcher.message.display": display
+                "dispatcher.message.display": display,
+                "chat.init": [init, 100]
             };
         };
     };
-}(jQuery, Listener, Event));
+}(jQuery, Listener, Event, Handlebars));
