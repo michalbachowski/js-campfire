@@ -49,8 +49,9 @@ var ChatFactory = function ($, Event, EventDispatcher) {
                     return;
                 }
                 // iterate throught response
-                var i, event;
+                var i, event, cursor;
                 for (i = 0; i < r.messages.length; i = i + 1) {
+                    cursor = r.messages[i].id;
                     // HOOK: dispatch message
                     event = dispatcher.notifyUntil(
                         new Event(
@@ -77,6 +78,7 @@ var ChatFactory = function ($, Event, EventDispatcher) {
                 }
                 // HOOK: response processed
                 dispatcher.notify(new Event(self, "chat.response.processed", {response: r}));
+                return {cursor: cursor};
             };
 
         return function (pooler, eventDispatcher) {
