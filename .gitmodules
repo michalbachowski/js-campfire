@@ -1,9 +1,9 @@
 [submodule "vendors/js-event-dispatcher"]
 	path = vendors/js-event-dispatcher
-	url = git@github.com:michalbachowski/js-event-dispatcher.git
+	url = git://github.com/michalbachowski/js-event-dispatcher.git
 [submodule "vendors/js-poller"]
 	path = vendors/js-poller
-	url = git@github.com:michalbachowski/js-poller.git
+	url = git://github.com/michalbachowski/js-poller.git
 [submodule "vendors/jquery-titlealert"]
 	path = vendors/jquery-titlealert
 	url = git://github.com/heyman/jquery-titlealert.git
