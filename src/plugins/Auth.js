@@ -194,6 +194,16 @@ var ChatPluginAuth = (function ($, Listener, Event, Handlebars) {
                         return false;
                     }).on("show", function (e) {
                         options.methods.hideErrors($(e.target));
+                    // focus nick field
+                    }).on("shown", function (e) {
+                        $(e.target).find("input[type=text]").focus();
+                    // focus message input field
+                    }).on("hidden", function (e) {
+                        var ev = self.dispatcher.notifyUntil(new Event(self, 'form.get'));
+                        if (!ev.isProcessed()) {
+                            return;
+                        }
+                        ev.getReturnValue().find("input[type=text]").focus();
                     });
                 }
                 return $dialog;
