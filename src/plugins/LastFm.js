@@ -113,6 +113,16 @@ var ChatPluginLastFm = (function ($, PluginUtility, Event, Handlebars) {
                         self.config.write('lastfm.username', user);
                         $dialog.modal("hide");
                         return false;
+                    // focus textarea field
+                    }).on("shown", function (e) {
+                        $(e.target).find("input[type=text]").focus();
+                    // focus message input field
+                    }).on("hidden", function (e) {
+                        var ev = self.dispatcher.notifyUntil(new Event(self, 'form.get'));
+                        if (!ev.isProcessed()) {
+                            return;
+                        }
+                        ev.getReturnValue().find("input[type=text]").focus();
                     });
                 $("body").append($dialog);
                 // handle clicks
