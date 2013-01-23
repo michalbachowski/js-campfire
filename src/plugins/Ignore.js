@@ -109,6 +109,16 @@ var ChatPluginIgnore = (function ($, PluginUtility, Event, Handlebars) {
                         return false;
                     }).on("show", function () {
                         options.methods.setIgnoredUsers(this, ignored.join(','));
+                    // focus nick field
+                    }).on("shown", function (e) {
+                        $(e.target).find("textarea").focus();
+                    // focus message input field
+                    }).on("hidden", function (e) {
+                        var ev = self.dispatcher.notifyUntil(new Event(self, 'form.get'));
+                        if (!ev.isProcessed()) {
+                            return;
+                        }
+                        ev.getReturnValue().find("input[type=text]").focus();
                     });
                 $("body").append($dialog);
                 
