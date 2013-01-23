@@ -90,6 +90,16 @@ var ChatPluginHighlight = (function ($, PluginUtility, Event, Handlebars) {
                         writeConfig(words);
                         $dialog.modal("hide");
                         return false;
+                    // focus nick field
+                    }).on("shown", function (e) {
+                        $(e.target).find("textarea").focus();
+                    // focus message input field
+                    }).on("hidden", function (e) {
+                        var ev = self.dispatcher.notifyUntil(new Event(self, 'form.get'));
+                        if (!ev.isProcessed()) {
+                            return;
+                        }
+                        ev.getReturnValue().find("input[type=text]").focus();
                     });
                 $("body").append($dialog);
             },
