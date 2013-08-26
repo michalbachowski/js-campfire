@@ -49,13 +49,6 @@ var ChatPluginInputHint = (function (Listener, $, Event) {
 
             // initialize plugin - check available commands
             init = function () {
-                // list available commands
-                self.dispatcher.notifyUntil(
-                    new Event(self, "send_message.send", {
-                        message: {message: "$console list_commands"},
-                        success: callback
-                    })
-                );
                 // add typeahead plugin
                 var form = self.dispatcher.notifyUntil(
                         new Event(self, "form.get", {})
@@ -66,6 +59,17 @@ var ChatPluginInputHint = (function (Listener, $, Event) {
                 }
                 options.methods.getInput(form.getReturnValue()).typeahead(
                     $.extend(true, {}, options.options.typeahead, {source: source})
+                );
+            },
+            getCommands = function () {
+                // remove all available commands
+                commands = [];
+                // list available commands
+                self.dispatcher.notifyUntil(
+                    new Event(self, "send_message.send", {
+                        message: {message: "$console list_commands"},
+                        success: callback
+                    })
                 );
             },
 
@@ -80,7 +84,9 @@ var ChatPluginInputHint = (function (Listener, $, Event) {
         this.mapping = function () {
             return {
                 "users_list.nick.filter": [addNick, 500],
-                "chat.init": init
+                "chat.init": init,
+                "auth.login": getCommands,
+                "auth.logout": getCommands
             };
         };
     };
