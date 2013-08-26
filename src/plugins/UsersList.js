@@ -56,7 +56,6 @@ var ChatPluginUsersList = (function (Listener, Event, $, Handlebars, setInterval
             options = $.extend(true, {}, defaults, params),
             cleaningTimeout = options.refresh,
             $box,
-            userTemplate = options.template.user,
 
             // creates new node
             createNode = function (data) {

@@ -5,7 +5,6 @@ var ChatPluginTyping = (function (Listener, Event, $, clearTimeout, setTimeout) 
         inputSelector: '#chat-form input[type=text]',
         clearingDelay: 15,  // seconds
         notifyDelay: 5,     // seconds
-        typingClass: 'typing',
         methods: (function () {
             var getNode = function (self, message) {
                     return self.dispatcher.notifyUntil(
