@@ -38,32 +38,34 @@ var ChatPluginInputHint = (function (Listener, $, Event) {
                 if (typeof response.response.console[0] !== 'object') {
                     return;
                 }
-                var form = self.dispatcher.notifyUntil(
-                        new Event(self, "form.get", {})
-                    ),
-                    input,
-                    i,
+                var i,
                     tmp = response.response.console[0],
                     item;
-                if (!form.isProcessed()) {
-                    throw "No form available";
-                }
                 for (i = 0; i < tmp.length; i = i + 1) {
                     item = tmp[i];
                     commands.push('$' + item.plugin + ' ' + item.method + ' ' + item.args);
                 }
-                options.methods.getInput(form.getReturnValue()).typeahead(
-                    $.extend(true, {}, options.options.typeahead, {source: source})
-                );
             },
 
-            // initialize plugin - check available puppets
+            // initialize plugin - check available commands
             init = function () {
+                // list available commands
                 self.dispatcher.notifyUntil(
                     new Event(self, "send_message.send", {
                         message: {message: "$console list_commands"},
                         success: callback
                     })
+                );
+                // add typeahead plugin
+                var form = self.dispatcher.notifyUntil(
+                        new Event(self, "form.get", {})
+                    ),
+                    input;
+                if (!form.isProcessed()) {
+                    throw "No form available";
+                }
+                options.methods.getInput(form.getReturnValue()).typeahead(
+                    $.extend(true, {}, options.options.typeahead, {source: source})
                 );
             },
 
