@@ -69,6 +69,7 @@ var ChatPluginForm = (function (jQuery, Listener, Event, Handlebars) {
 
             clear = function () {
                 $form.find("input[type=text]").val("").select();
+                self.dispatcher.notify(new Event(self, "form.message.cleared"));
             },
 
             onSubmit = function () {
