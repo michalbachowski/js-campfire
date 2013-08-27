@@ -49,10 +49,14 @@ var ChatPluginDirect = (function (Listener, $, Handlebars, Event) {
                 $input = $(options.inputSelector);
                 // handle clicks on "Priv" button
                 $("body").on("click", "." + options.button.className, function (e) {
-                    var name = $(e.target).closest(options.userNodeSelector).get(0).dataset.nick,
-                        val = $input.val();
-                    if (val.substr(0, 1) === '>') {
-                        return false;
+                    var $target = $(e.target),
+                        name = $target.closest(options.userNodeSelector).get(0).dataset.nick,
+                        val = $input.val(),
+                        has_lead = val.substr(0, 1) === '>',
+                        separator_position = val.indexOf(':');
+                    // remove current recipient
+                    if (has_lead && separator_position > 1) {
+                        val = val.substr(separator_position + 1).trimLeft();
                     }
                     $input.focus().val('>' + name + ': ' + val);
                     return false;
